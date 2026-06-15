@@ -4,7 +4,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-10 text-sm text-muted">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="font-semibold text-fg">Beacon — Personal Learning Beacon</p>
-          <p>Pattern-driven DSA interview prep. Built for beginners → FAANG.</p>
+          <p>Pattern-driven DSA interview prep. Built for beginners → MAANG.</p>
         </div>
         <p className="mt-4 text-xs leading-relaxed">
           Company sections reflect publicly reported community interview experiences and

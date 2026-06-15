@@ -1,7 +1,7 @@
 # Beacon — Personal Learning Beacon
 
 A pattern-driven, interview-focused DSA learning platform. Built to take a learner
-from "never solved a problem" to "FAANG-ready" — by teaching **pattern recognition**,
+from "never solved a problem" to "MAANG-ready" — by teaching **pattern recognition**,
 **optimisation**, and **how to explain solutions in an interview**, not just topics.
 
 > This repository is the **working app foundation** (pass 1). It is a real, runnable
@@ -22,7 +22,7 @@ from "never solved a problem" to "FAANG-ready" — by teaching **pattern recogni
 | Curated sheets (Blind 75, NeetCode 150, Namaste, Striver, Top 50) with progress | ✅ |
 | Company-wise prep (topic/pattern/difficulty distributions) | ✅ |
 | Roadmaps (14/30/60/90 day) with progress tracking | ✅ |
-| Visualizers — Sorting (5 algos), Binary Search, Tree Traversal, Graph BFS/DFS (play/pause/step/speed) | ✅ |
+| Visualizers (9) — Sorting (5 algos), Linear & Binary Search, Tree Traversal, BST ops, Graph BFS/DFS, Dijkstra, Topological Sort, DP table-fill (play/pause/step/speed) | ✅ |
 | Dashboard (progress, streak, weak/strong topics, revision schedule) | ✅ |
 | Spaced-repetition Revision Hub (1·3·7·15·30 day) | ✅ |
 | **AI Tutor** — streaming Claude chat via `/api/tutor` (set `ANTHROPIC_API_KEY`; graceful fallback without it) | ✅ |

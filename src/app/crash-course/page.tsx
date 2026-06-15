@@ -13,7 +13,7 @@ export default function CrashCoursePage() {
     { label: "Top 25", n: 25 },
     { label: "Top 50", n: 50 },
     { label: "Top 100", n: 100 },
-    { label: "FAANG Most Repeated", n: 100 },
+    { label: "MAANG Most Repeated", n: 100 },
   ];
 
   return (
