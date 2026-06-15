@@ -1,4 +1,8 @@
 import type { Problem } from "@/lib/types";
+import { PROBLEMS_BATCH_A } from "@/lib/data/problems-batch-a";
+import { PROBLEMS_BATCH_B } from "@/lib/data/problems-batch-b";
+import { PROBLEMS_BATCH_C } from "@/lib/data/problems-batch-c";
+import { PROBLEMS_BATCH_D } from "@/lib/data/problems-batch-d";
 
 // ---------------------------------------------------------------------------
 // Seed question library. Each entry follows the full teaching template:
@@ -8,7 +12,7 @@ import type { Problem } from "@/lib/types";
 // "officially asked" by any company.
 // ---------------------------------------------------------------------------
 
-export const PROBLEMS: Problem[] = [
+const BASE_PROBLEMS: Problem[] = [
   {
     slug: "two-sum",
     title: "Two Sum",
@@ -7013,6 +7017,15 @@ class Solution {
       },
     ],
   },
+];
+
+// Full library = curated base + topic batches (see problems-batch-*.ts).
+export const PROBLEMS: Problem[] = [
+  ...BASE_PROBLEMS,
+  ...PROBLEMS_BATCH_A,
+  ...PROBLEMS_BATCH_B,
+  ...PROBLEMS_BATCH_C,
+  ...PROBLEMS_BATCH_D,
 ];
 
 export const PROBLEM_MAP: Record<string, Problem> = Object.fromEntries(
