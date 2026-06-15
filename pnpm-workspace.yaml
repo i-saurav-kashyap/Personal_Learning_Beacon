@@ -16,3 +16,9 @@ allowBuilds:
 verifyDepsBeforeRun: warn
 autoInstallPeers: true
 strictPeerDependencies: false
+
+# --- Transitive security patches ------------------------------------------
+# Force the patched postcss everywhere (Next bundles a vulnerable <8.5.10).
+# GHSA-qx2v-qp2m-jg93 (XSS via unescaped </style>).
+overrides:
+  postcss@<8.5.10: ">=8.5.10"

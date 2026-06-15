@@ -24,7 +24,7 @@ from "never solved a problem" to "FAANG-ready" — by teaching **pattern recogni
 | Dashboard (progress, streak, weak/strong topics, revision schedule) | ✅ |
 | Spaced-repetition Revision Hub (1·3·7·15·30 day) | ✅ |
 | **AI Tutor** — streaming Claude chat via `/api/tutor` (set `ANTHROPIC_API_KEY`; graceful fallback without it) | ✅ |
-| Mock Interview — designed preview | ◻️ preview |
+| **Mock Interview engine** — live AI interviewer + code editor + timer + AI-graded report (`/api/mock/*`; scripted demo + heuristic report without a key) | ✅ |
 
 State persists locally (Zustand + `localStorage`) — no backend required for this pass.
 
