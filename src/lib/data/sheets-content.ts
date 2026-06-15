@@ -140,8 +140,58 @@ export const TOP_50: string[] = [
   "Subsets", "Combination Sum", "Single Number", "Missing Number", "Number of 1 Bits",
 ];
 
+// Namaste DSA-style track — a beginner→advanced progression across every core
+// topic, each problem backed by a full Beacon solution.
+export const NAMASTE_DSA: string[] = [
+  // Arrays
+  "Two Sum", "Contains Duplicate", "Maximum Subarray", "Best Time to Buy and Sell Stock",
+  "Majority Element", "Sort Colors", "Product of Array Except Self", "Container With Most Water",
+  "Two Sum II - Input Array Is Sorted", "3Sum", "Next Permutation", "Set Matrix Zeroes",
+  "Rotate Image", "Spiral Matrix", "Pascal's Triangle", "Subarray Sum Equals K",
+  "Maximum Product Subarray", "Find the Duplicate Number", "Merge Intervals",
+  // Strings
+  "Valid Anagram", "Valid Palindrome", "Group Anagrams",
+  "Longest Substring Without Repeating Characters", "Longest Palindromic Substring",
+  "Longest Repeating Character Replacement", "Reverse Words in a String",
+  "Encode and Decode Strings",
+  // Searching / Binary Search
+  "Binary Search", "Search in Rotated Sorted Array", "Find Minimum in Rotated Sorted Array",
+  "Koko Eating Bananas", "Search a 2D Matrix", "Single Element in a Sorted Array",
+  "Median of Two Sorted Arrays",
+  // Linked List
+  "Reverse Linked List", "Middle of the Linked List", "Linked List Cycle",
+  "Merge Two Sorted Lists", "Remove Nth Node From End of List", "Add Two Numbers", "Reorder List",
+  "Copy List with Random Pointer", "LRU Cache",
+  // Stacks & Queues
+  "Valid Parentheses", "Min Stack", "Daily Temperatures", "Largest Rectangle in Histogram",
+  "Next Greater Element I", "Evaluate Reverse Polish Notation",
+  // Trees
+  "Maximum Depth of Binary Tree", "Invert Binary Tree", "Diameter of Binary Tree",
+  "Balanced Binary Tree", "Binary Tree Level Order Traversal", "Validate Binary Search Tree",
+  "Lowest Common Ancestor of a BST", "Binary Tree Maximum Path Sum",
+  "Serialize and Deserialize Binary Tree", "Kth Smallest Element in a BST",
+  "Construct Binary Tree from Preorder and Inorder Traversal",
+  // Heap
+  "Kth Largest Element in an Array", "Top K Frequent Elements", "Find Median from Data Stream",
+  "K Closest Points to Origin",
+  // Graphs
+  "Number of Islands", "Clone Graph", "Course Schedule", "Rotting Oranges",
+  "Pacific Atlantic Water Flow", "Word Ladder", "Network Delay Time",
+  // Backtracking
+  "Subsets", "Combination Sum", "Permutations", "Word Search", "N-Queens",
+  // Dynamic Programming
+  "Climbing Stairs", "House Robber", "Coin Change", "Longest Increasing Subsequence",
+  "Word Break", "Unique Paths", "Longest Common Subsequence", "Edit Distance", "Maximal Square",
+  "Partition Equal Subset Sum",
+  // Greedy
+  "Jump Game", "Gas Station", "Task Scheduler",
+  // Bit Manipulation
+  "Single Number", "Number of 1 Bits", "Counting Bits", "Missing Number",
+];
+
 export const SHEET_TITLES: Partial<Record<SheetId, string[]>> = {
   blind75: BLIND_75,
   neetcode150: NEETCODE_150,
+  namaste: NAMASTE_DSA,
   top50: TOP_50,
 };
