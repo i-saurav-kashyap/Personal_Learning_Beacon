@@ -16,6 +16,7 @@ const ALIASES: Record<string, string> = {
   longestconsecutivesubsequence: "longest-consecutive-sequence",
   mergeoverlappingsubinterval: "merge-intervals",
   searchxinsortedarray: "binary-search",
+  lowestcommonancestorofabinarysearchtree: "lowest-common-ancestor-of-a-bst",
 };
 
 export function librarySlugForTitle(title: string): string | undefined {

@@ -16,11 +16,11 @@ from "never solved a problem" to "MAANG-ready" — by teaching **pattern recogni
 | Design system (dark/light, a11y, responsive, glass nav) | ✅ |
 | Personalized onboarding → roadmap (level / company / time / language) | ✅ |
 | **Patterns** (17) — explanation, analogy, recognition guide, traps, template, problems | ✅ |
-| **Question Library** (154) — brute→better→optimal, dry run, complexity, tips, mistakes, follow-ups, Java/Python/JS/Apex; **119/119 maang-100 covered** | ✅ |
+| **Question Library** (177) — brute→better→optimal, dry run, complexity, tips, mistakes, follow-ups, Java/Python/JS/Apex | ✅ |
 | **Full DSA Course** — A-to-Z, 16 steps / 369 problems (Striver A2Z structure) with check-off progress, deep-linking into the library | ✅ |
 | Grouped navbar — Learn / Practice / Tools dropdowns + Dashboard | ✅ |
-| Curated sheets (Blind 75, NeetCode 150, Namaste, Striver, Top 50) with progress | ✅ |
-| Company-wise prep (topic/pattern/difficulty distributions) | ✅ |
+| **Curated sheets** — **Blind 75 (75/75)** and **NeetCode 150 (149/149)** complete with full solutions; Top 50 curated; Striver A2Z via the course | ✅ |
+| **Company-wise prep** (12 companies) — topic/pattern/difficulty distributions + reported problems | ✅ |
 | Roadmaps (14/30/60/90 day) with progress tracking | ✅ |
 | Visualizers (9) — Sorting (5 algos), Linear & Binary Search, Tree Traversal, BST ops, Graph BFS/DFS, Dijkstra, Topological Sort, DP table-fill (play/pause/step/speed) | ✅ |
 | Dashboard (progress, streak, weak/strong topics, revision schedule) | ✅ |
