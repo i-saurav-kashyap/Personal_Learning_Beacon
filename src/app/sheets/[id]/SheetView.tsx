@@ -32,6 +32,20 @@ export function SheetView({ id }: { id: SheetId }) {
         <p className="mt-2 text-muted">{meta.description}</p>
       </header>
 
+      {id === "striver" && (
+        <Link href="/course">
+          <Card className="mb-6 border-brand/40 bg-brand/5 transition-colors hover:border-brand">
+            <p className="text-sm font-semibold">
+              📚 The complete A2Z sheet lives in the Full DSA Course →
+            </p>
+            <p className="mt-1 text-sm text-muted">
+              All 369 problems across 16 steps, with check-off progress and links into full
+              Beacon explanations.
+            </p>
+          </Card>
+        </Link>
+      )}
+
       <Card className="mb-6">
         <div className="flex justify-between text-sm">
           <span className="font-medium">Your progress (seeded problems)</span>

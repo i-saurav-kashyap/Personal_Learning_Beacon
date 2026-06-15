@@ -15,8 +15,10 @@ from "never solved a problem" to "FAANG-ready" — by teaching **pattern recogni
 | --- | --- |
 | Design system (dark/light, a11y, responsive, glass nav) | ✅ |
 | Personalized onboarding → roadmap (level / company / time / language) | ✅ |
-| **Patterns** (15) — explanation, analogy, recognition guide, traps, template, problems | ✅ |
-| **Question Library** (25) — brute→better→optimal, dry run, complexity, tips, mistakes, follow-ups, Java/Python/JS/Apex | ✅ |
+| **Patterns** (17) — explanation, analogy, recognition guide, traps, template, problems | ✅ |
+| **Question Library** (119) — brute→better→optimal, dry run, complexity, tips, mistakes, follow-ups, Java/Python/JS/Apex | ✅ |
+| **Full DSA Course** — A-to-Z, 16 steps / 369 problems (Striver A2Z structure) with check-off progress, deep-linking into the library | ✅ |
+| Grouped navbar — Learn / Practice / Tools dropdowns + Dashboard | ✅ |
 | Curated sheets (Blind 75, NeetCode 150, Namaste, Striver, Top 50) with progress | ✅ |
 | Company-wise prep (topic/pattern/difficulty distributions) | ✅ |
 | Roadmaps (14/30/60/90 day) with progress tracking | ✅ |

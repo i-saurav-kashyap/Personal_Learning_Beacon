@@ -1,4 +1,8 @@
 import type { Problem } from "@/lib/types";
+import { PROBLEMS_BATCH_A } from "@/lib/data/problems-batch-a";
+import { PROBLEMS_BATCH_B } from "@/lib/data/problems-batch-b";
+import { PROBLEMS_BATCH_C } from "@/lib/data/problems-batch-c";
+import { PROBLEMS_BATCH_D } from "@/lib/data/problems-batch-d";
 
 // ---------------------------------------------------------------------------
 // Seed question library. Each entry follows the full teaching template:
@@ -8,7 +12,7 @@ import type { Problem } from "@/lib/types";
 // "officially asked" by any company.
 // ---------------------------------------------------------------------------
 
-export const PROBLEMS: Problem[] = [
+const BASE_PROBLEMS: Problem[] = [
   {
     slug: "two-sum",
     title: "Two Sum",
@@ -3067,6 +3071,3961 @@ class Solution {
       },
     ],
   },
+  {
+    slug: "longest-consecutive-sequence",
+    title: "Longest Consecutive Sequence",
+    difficulty: "Medium",
+    patterns: ["hashing"],
+    topics: ["Arrays", "Hashing"],
+    companies: ["google", "amazon", "meta"],
+    sheets: ["blind75", "neetcode150"],
+    frequency: 4,
+    statement:
+      "Given an unsorted array of integers `nums`, return the length of the longest sequence of consecutive integers. The algorithm must run in O(n).",
+    beginnerExplanation:
+      "Sorting would give O(n log n). The trick is to dump everything into a set, then only start counting from numbers that are the START of a run (i.e. the number one smaller isn't present). Each number is visited at most twice, so it's O(n).",
+    realWorldAnalogy:
+      "Imagine scattered house numbers on a street. You only bother walking the street starting from a house whose left neighbour is missing — that way you walk each block exactly once instead of restarting from the middle.",
+    visualExplanation:
+      "nums = [100,4,200,1,3,2]\nset = {1,2,3,4,100,200}\n1 has no 0 -> count 1,2,3,4 = 4\n100 has no 99 -> 1\n200 has no 199 -> 1\nlongest = 4",
+    approaches: [
+      {
+        title: "Sort then scan",
+        tier: "Brute Force",
+        idea: "Sort and count consecutive runs.",
+        steps: ["Sort the array", "Walk it counting runs where each value is prev+1"],
+        time: "O(n log n)",
+        space: "O(1)",
+      },
+      {
+        title: "Hash set, count from run starts",
+        tier: "Optimal",
+        idea: "Only expand sequences from numbers that have no predecessor in the set.",
+        steps: [
+          "Put all numbers in a set",
+          "For each n where n-1 is absent, walk n, n+1, n+2... counting length",
+          "Track the maximum length",
+        ],
+        time: "O(n)",
+        space: "O(n)",
+      },
+    ],
+    dryRun:
+      "n=4: 3 present so 4 is not a start, skip\nn=1: 0 absent -> walk 1,2,3,4 length 4\nresult 4",
+    interviewTips: [
+      "Say out loud why it's O(n) despite the inner while loop — the 'only start from run beginnings' guard is the whole point.",
+      "Clarify whether duplicates exist; a set handles them naturally.",
+    ],
+    commonMistakes: [
+      "Expanding a sequence from every element (that's O(n^2)).",
+      "Forgetting the 'n-1 not in set' guard.",
+    ],
+    followUps: ["Return the actual sequence, not just its length.", "What if the stream is too big for memory?"],
+    related: ["two-sum", "contains-duplicate"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def longest_consecutive(nums):
+    s = set(nums)
+    best = 0
+    for n in s:
+        if n - 1 not in s:
+            length = 1
+            while n + length in s:
+                length += 1
+            best = max(best, length)
+    return best`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `import java.util.*;
+
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> s = new HashSet<>();
+        for (int n : nums) s.add(n);
+        int best = 0;
+        for (int n : s) {
+            if (!s.contains(n - 1)) {
+                int length = 1;
+                while (s.contains(n + length)) length++;
+                best = Math.max(best, length);
+            }
+        }
+        return best;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function longestConsecutive(nums) {
+  const s = new Set(nums);
+  let best = 0;
+  for (const n of s) {
+    if (!s.has(n - 1)) {
+      let length = 1;
+      while (s.has(n + length)) length++;
+      best = Math.max(best, length);
+    }
+  }
+  return best;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Integer longestConsecutive(List<Integer> nums) {
+        Set<Integer> s = new Set<Integer>(nums);
+        Integer best = 0;
+        for (Integer n : s) {
+            if (!s.contains(n - 1)) {
+                Integer length = 1;
+                while (s.contains(n + length)) length++;
+                best = Math.max(best, length);
+            }
+        }
+        return best;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "two-sum-ii",
+    title: "Two Sum II - Input Array Is Sorted",
+    difficulty: "Medium",
+    patterns: ["two-pointers"],
+    topics: ["Arrays", "Binary Search"],
+    companies: ["amazon", "apple"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "Given a 1-indexed array `numbers` sorted in non-decreasing order, return the 1-based indices of the two numbers that add up to `target`. Use O(1) extra space.",
+    beginnerExplanation:
+      "Because the array is already sorted, you don't need a hash map. Put one pointer at the start and one at the end; if the sum is too big move the right pointer left, if too small move the left pointer right.",
+    realWorldAnalogy:
+      "Two people walking toward each other on a sorted number line, adjusting their steps until their values add up to exactly the target.",
+    visualExplanation:
+      "numbers = [2,7,11,15], target = 9\nl=0 r=3 -> 2+15=17 >9 -> r--\nl=0 r=2 -> 2+11=13 >9 -> r--\nl=0 r=1 -> 2+7=9 -> [1,2]",
+    approaches: [
+      {
+        title: "Hash map",
+        tier: "Better",
+        idea: "Same as Two Sum, but ignores the sorted property and uses O(n) space.",
+        steps: ["Store seen values", "Look for complement"],
+        time: "O(n)",
+        space: "O(n)",
+      },
+      {
+        title: "Two pointers",
+        tier: "Optimal",
+        idea: "Exploit the sorted order to converge from both ends with no extra space.",
+        steps: [
+          "l = 0, r = n-1",
+          "If numbers[l]+numbers[r] == target return [l+1, r+1]",
+          "If sum < target l++ else r--",
+        ],
+        time: "O(n)",
+        space: "O(1)",
+      },
+    ],
+    dryRun: "target=9 [2,7,11,15]\n2+15=17>9 r--\n2+11=13>9 r--\n2+7=9 -> answer [1,2]",
+    interviewTips: [
+      "Mention the 1-indexed return — a classic off-by-one trap.",
+      "Contrast with Two Sum: sorted input unlocks O(1) space.",
+    ],
+    commonMistakes: ["Returning 0-based indices.", "Using a hash map and missing the O(1)-space ask."],
+    followUps: ["What if there are multiple valid pairs?", "Three numbers summing to target (3Sum)."],
+    related: ["two-sum", "three-sum"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def two_sum(numbers, target):
+    l, r = 0, len(numbers) - 1
+    while l < r:
+        s = numbers[l] + numbers[r]
+        if s == target:
+            return [l + 1, r + 1]
+        if s < target:
+            l += 1
+        else:
+            r -= 1
+    return []`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public int[] twoSum(int[] numbers, int target) {
+        int l = 0, r = numbers.length - 1;
+        while (l < r) {
+            int s = numbers[l] + numbers[r];
+            if (s == target) return new int[] { l + 1, r + 1 };
+            if (s < target) l++;
+            else r--;
+        }
+        return new int[] {};
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function twoSum(numbers, target) {
+  let l = 0, r = numbers.length - 1;
+  while (l < r) {
+    const s = numbers[l] + numbers[r];
+    if (s === target) return [l + 1, r + 1];
+    if (s < target) l++;
+    else r--;
+  }
+  return [];
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static List<Integer> twoSum(List<Integer> numbers, Integer target) {
+        Integer l = 0, r = numbers.size() - 1;
+        while (l < r) {
+            Integer s = numbers[l] + numbers[r];
+            if (s == target) return new List<Integer>{ l + 1, r + 1 };
+            if (s < target) l++;
+            else r--;
+        }
+        return new List<Integer>();
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "trapping-rain-water",
+    title: "Trapping Rain Water",
+    difficulty: "Hard",
+    patterns: ["two-pointers"],
+    topics: ["Arrays"],
+    companies: ["amazon", "google", "meta"],
+    sheets: ["neetcode150"],
+    frequency: 4,
+    statement:
+      "Given `height[]` representing an elevation map where each bar has width 1, compute how much water it can trap after raining.",
+    beginnerExplanation:
+      "Water above any bar is limited by the shorter of the tallest wall to its left and the tallest wall to its right. With two pointers you always process the side with the smaller wall, because that side's answer is fully determined.",
+    realWorldAnalogy:
+      "Water pooling between buildings — each puddle's depth is capped by the lower of the two tallest buildings flanking it.",
+    visualExplanation:
+      "height = [0,1,0,2,1,0,1,3,2,1,2,1]\nwater above each dip is min(leftMax,rightMax)-height\ntotal = 6",
+    approaches: [
+      {
+        title: "Prefix max arrays",
+        tier: "Better",
+        idea: "Precompute leftMax and rightMax for every index.",
+        steps: ["Build leftMax[] and rightMax[]", "Sum min(leftMax[i],rightMax[i])-height[i]"],
+        time: "O(n)",
+        space: "O(n)",
+      },
+      {
+        title: "Two pointers",
+        tier: "Optimal",
+        idea: "Move the pointer on the smaller side; that side's bound is known.",
+        steps: [
+          "l=0,r=n-1, leftMax=rightMax=0, total=0",
+          "If height[l] < height[r]: update leftMax, add leftMax-height[l], l++",
+          "Else update rightMax, add rightMax-height[r], r--",
+        ],
+        time: "O(n)",
+        space: "O(1)",
+      },
+    ],
+    dryRun:
+      "Smaller side dictates the bound. Walk inward, accumulating (curMax - height) on whichever side is lower.",
+    interviewTips: [
+      "Explain WHY moving the smaller side is safe: its trapped water depends only on its own max.",
+      "The O(1)-space two-pointer version is the impressive answer.",
+    ],
+    commonMistakes: ["Off-by-one on pointer movement.", "Updating max after adding water instead of before."],
+    followUps: ["2D version (Trapping Rain Water II) uses a heap.", "Return the per-index water profile."],
+    related: ["container-with-most-water"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def trap(height):
+    l, r = 0, len(height) - 1
+    left_max = right_max = total = 0
+    while l < r:
+        if height[l] < height[r]:
+            left_max = max(left_max, height[l])
+            total += left_max - height[l]
+            l += 1
+        else:
+            right_max = max(right_max, height[r])
+            total += right_max - height[r]
+            r -= 1
+    return total`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public int trap(int[] height) {
+        int l = 0, r = height.length - 1;
+        int leftMax = 0, rightMax = 0, total = 0;
+        while (l < r) {
+            if (height[l] < height[r]) {
+                leftMax = Math.max(leftMax, height[l]);
+                total += leftMax - height[l];
+                l++;
+            } else {
+                rightMax = Math.max(rightMax, height[r]);
+                total += rightMax - height[r];
+                r--;
+            }
+        }
+        return total;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function trap(height) {
+  let l = 0, r = height.length - 1;
+  let leftMax = 0, rightMax = 0, total = 0;
+  while (l < r) {
+    if (height[l] < height[r]) {
+      leftMax = Math.max(leftMax, height[l]);
+      total += leftMax - height[l];
+      l++;
+    } else {
+      rightMax = Math.max(rightMax, height[r]);
+      total += rightMax - height[r];
+      r--;
+    }
+  }
+  return total;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Integer trap(List<Integer> height) {
+        Integer l = 0, r = height.size() - 1;
+        Integer leftMax = 0, rightMax = 0, total = 0;
+        while (l < r) {
+            if (height[l] < height[r]) {
+                leftMax = Math.max(leftMax, height[l]);
+                total += leftMax - height[l];
+                l++;
+            } else {
+                rightMax = Math.max(rightMax, height[r]);
+                total += rightMax - height[r];
+                r--;
+            }
+        }
+        return total;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "longest-repeating-character-replacement",
+    title: "Longest Repeating Character Replacement",
+    difficulty: "Medium",
+    patterns: ["sliding-window"],
+    topics: ["Strings", "Hashing"],
+    companies: ["google", "amazon"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "Given a string `s` and integer `k`, you may replace at most `k` characters. Return the length of the longest substring containing the same letter after replacements.",
+    beginnerExplanation:
+      "Slide a window. A window is valid if (window length - count of its most frequent char) <= k, meaning the other chars can all be converted. Grow right; if invalid, shrink left.",
+    realWorldAnalogy:
+      "You have k coats of paint to make a stretch of fence one colour. The longest stretch you can unify is bounded by how many planks already share the dominant colour plus your k coats.",
+    visualExplanation:
+      's = "AABABBA", k = 1\nwindow grows; valid while (len - maxFreq) <= 1\nbest window length = 4',
+    approaches: [
+      {
+        title: "Check every substring",
+        tier: "Brute Force",
+        idea: "For each substring, see if it can be unified within k swaps.",
+        steps: ["Enumerate substrings", "Count chars, check len-maxFreq<=k"],
+        time: "O(n^2)",
+        space: "O(1)",
+      },
+      {
+        title: "Sliding window with frequency",
+        tier: "Optimal",
+        idea: "Track counts and the max frequency; shrink when (len - maxFreq) > k.",
+        steps: [
+          "Expand right, increment count[s[right]], update maxFreq",
+          "If (right-left+1 - maxFreq) > k, drop count[s[left]], left++",
+          "Answer is the largest window seen",
+        ],
+        time: "O(n)",
+        space: "O(1) (26 letters)",
+      },
+    ],
+    dryRun: "Keep maxFreq of the window; valid iff windowLen - maxFreq <= k. Track widest valid window.",
+    interviewTips: [
+      "You don't strictly need to recompute maxFreq when shrinking — a stale maxFreq still yields the correct answer because the window only grows when it can beat the best.",
+    ],
+    commonMistakes: ["Recomputing maxFreq every shrink (unnecessary, but harmless).", "Off-by-one in window length."],
+    followUps: ["At most k distinct characters.", "Return the substring itself."],
+    related: ["longest-substring-without-repeating", "permutation-in-string"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def character_replacement(s, k):
+    count = {}
+    left = max_freq = best = 0
+    for right, ch in enumerate(s):
+        count[ch] = count.get(ch, 0) + 1
+        max_freq = max(max_freq, count[ch])
+        while (right - left + 1) - max_freq > k:
+            count[s[left]] -= 1
+            left += 1
+        best = max(best, right - left + 1)
+    return best`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public int characterReplacement(String s, int k) {
+        int[] count = new int[26];
+        int left = 0, maxFreq = 0, best = 0;
+        for (int right = 0; right < s.length(); right++) {
+            count[s.charAt(right) - 'A']++;
+            maxFreq = Math.max(maxFreq, count[s.charAt(right) - 'A']);
+            while ((right - left + 1) - maxFreq > k) {
+                count[s.charAt(left) - 'A']--;
+                left++;
+            }
+            best = Math.max(best, right - left + 1);
+        }
+        return best;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function characterReplacement(s, k) {
+  const count = {};
+  let left = 0, maxFreq = 0, best = 0;
+  for (let right = 0; right < s.length; right++) {
+    const ch = s[right];
+    count[ch] = (count[ch] || 0) + 1;
+    maxFreq = Math.max(maxFreq, count[ch]);
+    while (right - left + 1 - maxFreq > k) {
+      count[s[left]]--;
+      left++;
+    }
+    best = Math.max(best, right - left + 1);
+  }
+  return best;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Integer characterReplacement(String s, Integer k) {
+        Map<String, Integer> count = new Map<String, Integer>();
+        Integer left = 0, maxFreq = 0, best = 0;
+        for (Integer right = 0; right < s.length(); right++) {
+            String ch = s.substring(right, right + 1);
+            count.put(ch, (count.containsKey(ch) ? count.get(ch) : 0) + 1);
+            maxFreq = Math.max(maxFreq, count.get(ch));
+            while ((right - left + 1) - maxFreq > k) {
+                String lc = s.substring(left, left + 1);
+                count.put(lc, count.get(lc) - 1);
+                left++;
+            }
+            best = Math.max(best, right - left + 1);
+        }
+        return best;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "permutation-in-string",
+    title: "Permutation in String",
+    difficulty: "Medium",
+    patterns: ["sliding-window"],
+    topics: ["Strings", "Hashing"],
+    companies: ["microsoft", "amazon"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "Given strings `s1` and `s2`, return true if `s2` contains a permutation of `s1` as a contiguous substring.",
+    beginnerExplanation:
+      "A permutation has the exact same character counts. Slide a fixed-size window (length of s1) across s2 and check whether the window's character counts match s1's counts.",
+    realWorldAnalogy:
+      "Looking for an anagram of a word hidden inside a longer text by sliding a fixed-width frame and comparing letter tallies.",
+    visualExplanation:
+      's1 = "ab", s2 = "eidbaooo"\nwindow size 2 slides: "ei","id","db","ba" <- matches counts of "ab" -> true',
+    approaches: [
+      {
+        title: "Sort every window",
+        tier: "Brute Force",
+        idea: "Sort each length-|s1| window and compare to sorted s1.",
+        steps: ["For each window sort and compare"],
+        time: "O(n * k log k)",
+        space: "O(k)",
+      },
+      {
+        title: "Fixed sliding window of counts",
+        tier: "Optimal",
+        idea: "Maintain a count array for the current window and compare to s1's counts.",
+        steps: [
+          "Build count of s1",
+          "Slide a window of size |s1| over s2 updating counts",
+          "Return true when window counts equal s1 counts",
+        ],
+        time: "O(n)",
+        space: "O(1) (26 letters)",
+      },
+    ],
+    dryRun: "Compare 26-length count arrays of s1 and each window; match means a permutation is present.",
+    interviewTips: [
+      "Track a 'matches' counter of how many of the 26 buckets are equal to avoid re-scanning all 26 each step.",
+    ],
+    commonMistakes: ["Window size off by one.", "Comparing strings instead of multisets."],
+    followUps: ["Find all start indices (Find All Anagrams).", "Unicode alphabets."],
+    related: ["valid-anagram", "group-anagrams"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def check_inclusion(s1, s2):
+    if len(s1) > len(s2):
+        return False
+    need = [0] * 26
+    win = [0] * 26
+    for c in s1:
+        need[ord(c) - 97] += 1
+    for i, c in enumerate(s2):
+        win[ord(c) - 97] += 1
+        if i >= len(s1):
+            win[ord(s2[i - len(s1)]) - 97] -= 1
+        if win == need:
+            return True
+    return False`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `import java.util.*;
+
+class Solution {
+    public boolean checkInclusion(String s1, String s2) {
+        if (s1.length() > s2.length()) return false;
+        int[] need = new int[26], win = new int[26];
+        for (char c : s1.toCharArray()) need[c - 'a']++;
+        for (int i = 0; i < s2.length(); i++) {
+            win[s2.charAt(i) - 'a']++;
+            if (i >= s1.length()) win[s2.charAt(i - s1.length()) - 'a']--;
+            if (Arrays.equals(win, need)) return true;
+        }
+        return false;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function checkInclusion(s1, s2) {
+  if (s1.length > s2.length) return false;
+  const need = new Array(26).fill(0);
+  const win = new Array(26).fill(0);
+  const idx = (c) => c.charCodeAt(0) - 97;
+  for (const c of s1) need[idx(c)]++;
+  for (let i = 0; i < s2.length; i++) {
+    win[idx(s2[i])]++;
+    if (i >= s1.length) win[idx(s2[i - s1.length])]--;
+    if (win.every((v, j) => v === need[j])) return true;
+  }
+  return false;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Boolean checkInclusion(String s1, String s2) {
+        if (s1.length() > s2.length()) return false;
+        List<Integer> need = new List<Integer>();
+        List<Integer> win = new List<Integer>();
+        for (Integer i = 0; i < 26; i++) { need.add(0); win.add(0); }
+        for (Integer i = 0; i < s1.length(); i++) {
+            Integer c = s1.charAt(i) - 97;
+            need[c] = need[c] + 1;
+        }
+        for (Integer i = 0; i < s2.length(); i++) {
+            Integer c = s2.charAt(i) - 97;
+            win[c] = win[c] + 1;
+            if (i >= s1.length()) {
+                Integer old = s2.charAt(i - s1.length()) - 97;
+                win[old] = win[old] - 1;
+            }
+            if (win == need) return true;
+        }
+        return false;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "min-stack",
+    title: "Min Stack",
+    difficulty: "Medium",
+    patterns: ["stack"],
+    topics: ["Stacks"],
+    companies: ["amazon", "google", "microsoft"],
+    sheets: ["neetcode150"],
+    frequency: 4,
+    statement:
+      "Design a stack supporting push, pop, top, and retrieving the minimum element — all in O(1).",
+    beginnerExplanation:
+      "The tricky part is O(1) min. Alongside the main stack, keep a second stack that records the minimum so far at each level. When you pop, both stacks pop together, so the top of the min-stack is always the current minimum.",
+    realWorldAnalogy:
+      "A stack of plates where each plate has a sticky note saying 'lightest plate at or below me'. Glance at the top note and you instantly know the lightest plate.",
+    visualExplanation:
+      "push 5 -> min[5]\npush 3 -> min[5,3]\npush 7 -> min[5,3,3]\ngetMin -> 3; pop; getMin -> 3; pop; getMin -> 5",
+    approaches: [
+      {
+        title: "Scan for min on demand",
+        tier: "Brute Force",
+        idea: "Keep a normal stack; compute min by scanning when asked.",
+        steps: ["push/pop normally", "getMin scans the whole stack"],
+        time: "O(n) getMin",
+        space: "O(n)",
+      },
+      {
+        title: "Auxiliary min stack",
+        tier: "Optimal",
+        idea: "Mirror stack storing the running minimum at each depth.",
+        steps: [
+          "On push, push min(value, currentMin) onto the min stack",
+          "On pop, pop both stacks",
+          "getMin returns the min stack's top",
+        ],
+        time: "O(1) all ops",
+        space: "O(n)",
+      },
+    ],
+    dryRun: "push 2 (min2), push 0 (min0), push 3 (min0); getMin=0; pop; getMin=0; pop; getMin=2",
+    interviewTips: [
+      "Mention you could store just deltas to the min to save space — but the two-stack version is clearest.",
+    ],
+    commonMistakes: ["Forgetting to pop the min stack in lockstep.", "Using strict < and mishandling duplicate minима."],
+    followUps: ["Implement a Max Stack.", "Do it with a single stack of (val, min) pairs."],
+    related: ["valid-parentheses"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `class MinStack:
+    def __init__(self):
+        self.stack = []
+        self.mins = []
+
+    def push(self, val):
+        self.stack.append(val)
+        self.mins.append(val if not self.mins else min(val, self.mins[-1]))
+
+    def pop(self):
+        self.stack.pop()
+        self.mins.pop()
+
+    def top(self):
+        return self.stack[-1]
+
+    def getMin(self):
+        return self.mins[-1]`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `import java.util.*;
+
+class MinStack {
+    private Deque<Integer> stack = new ArrayDeque<>();
+    private Deque<Integer> mins = new ArrayDeque<>();
+
+    public void push(int val) {
+        stack.push(val);
+        mins.push(mins.isEmpty() ? val : Math.min(val, mins.peek()));
+    }
+    public void pop() { stack.pop(); mins.pop(); }
+    public int top() { return stack.peek(); }
+    public int getMin() { return mins.peek(); }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `class MinStack {
+  constructor() {
+    this.stack = [];
+    this.mins = [];
+  }
+  push(val) {
+    this.stack.push(val);
+    this.mins.push(this.mins.length ? Math.min(val, this.mins[this.mins.length - 1]) : val);
+  }
+  pop() { this.stack.pop(); this.mins.pop(); }
+  top() { return this.stack[this.stack.length - 1]; }
+  getMin() { return this.mins[this.mins.length - 1]; }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class MinStack {
+    private List<Integer> stack = new List<Integer>();
+    private List<Integer> mins = new List<Integer>();
+
+    public void push(Integer val) {
+        stack.add(val);
+        mins.add(mins.isEmpty() ? val : Math.min(val, mins[mins.size() - 1]));
+    }
+    public void pop() {
+        stack.remove(stack.size() - 1);
+        mins.remove(mins.size() - 1);
+    }
+    public Integer top() { return stack[stack.size() - 1]; }
+    public Integer getMin() { return mins[mins.size() - 1]; }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "evaluate-reverse-polish-notation",
+    title: "Evaluate Reverse Polish Notation",
+    difficulty: "Medium",
+    patterns: ["stack"],
+    topics: ["Stacks"],
+    companies: ["amazon", "linkedin"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "Evaluate an arithmetic expression in Reverse Polish Notation (postfix). Valid operators are +, -, *, /; division truncates toward zero.",
+    beginnerExplanation:
+      "In postfix, operators come after their operands. Push numbers onto a stack; when you hit an operator, pop the top two, apply it, and push the result back. The final stack value is the answer.",
+    realWorldAnalogy:
+      "A cafeteria tray stack: you set down plates (numbers), and when an operator arrives it takes the top two plates, combines them, and puts the single result back.",
+    visualExplanation:
+      'tokens = ["2","1","+","3","*"]\npush2,push1 -> +: 3 -> push3 -> *: 9 -> result 9',
+    approaches: [
+      {
+        title: "Stack evaluation",
+        tier: "Optimal",
+        idea: "Push operands; on an operator, pop two and combine.",
+        steps: [
+          "For each token: if a number, push it",
+          "If an operator, pop b then a, push a op b",
+          "Return the remaining stack value",
+        ],
+        time: "O(n)",
+        space: "O(n)",
+      },
+    ],
+    dryRun: "[4,13,5,/,+] -> 13/5=2 -> 4+2=6",
+    interviewTips: [
+      "Watch operand order for - and /: it's a (op) b where a was pushed first (popped second).",
+      "Clarify truncation direction for division.",
+    ],
+    commonMistakes: ["Reversing operands for subtraction/division.", "Float division instead of truncating toward zero."],
+    followUps: ["Convert infix to postfix.", "Support parentheses and precedence (full calculator)."],
+    related: ["valid-parentheses", "min-stack"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def eval_rpn(tokens):
+    stack = []
+    ops = {"+", "-", "*", "/"}
+    for t in tokens:
+        if t in ops:
+            b = stack.pop()
+            a = stack.pop()
+            if t == "+": stack.append(a + b)
+            elif t == "-": stack.append(a - b)
+            elif t == "*": stack.append(a * b)
+            else: stack.append(int(a / b))  # truncate toward zero
+        else:
+            stack.append(int(t))
+    return stack[-1]`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `import java.util.*;
+
+class Solution {
+    public int evalRPN(String[] tokens) {
+        Deque<Integer> st = new ArrayDeque<>();
+        for (String t : tokens) {
+            switch (t) {
+                case "+": st.push(st.pop() + st.pop()); break;
+                case "*": st.push(st.pop() * st.pop()); break;
+                case "-": { int b = st.pop(), a = st.pop(); st.push(a - b); break; }
+                case "/": { int b = st.pop(), a = st.pop(); st.push(a / b); break; }
+                default: st.push(Integer.parseInt(t));
+            }
+        }
+        return st.pop();
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function evalRPN(tokens) {
+  const st = [];
+  for (const t of tokens) {
+    if (t === "+" || t === "-" || t === "*" || t === "/") {
+      const b = st.pop(), a = st.pop();
+      if (t === "+") st.push(a + b);
+      else if (t === "-") st.push(a - b);
+      else if (t === "*") st.push(a * b);
+      else st.push(Math.trunc(a / b));
+    } else st.push(parseInt(t, 10));
+  }
+  return st.pop();
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Integer evalRPN(List<String> tokens) {
+        List<Integer> st = new List<Integer>();
+        for (String t : tokens) {
+            if (t == '+' || t == '-' || t == '*' || t == '/') {
+                Integer b = st.remove(st.size() - 1);
+                Integer a = st.remove(st.size() - 1);
+                if (t == '+') st.add(a + b);
+                else if (t == '-') st.add(a - b);
+                else if (t == '*') st.add(a * b);
+                else st.add(a / b);
+            } else {
+                st.add(Integer.valueOf(t));
+            }
+        }
+        return st[st.size() - 1];
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "daily-temperatures",
+    title: "Daily Temperatures",
+    difficulty: "Medium",
+    patterns: ["monotonic-stack"],
+    topics: ["Arrays", "Stacks"],
+    companies: ["amazon", "google"],
+    sheets: ["neetcode150"],
+    frequency: 4,
+    statement:
+      "Given daily `temperatures`, return an array where answer[i] is how many days until a warmer temperature. If none, put 0.",
+    beginnerExplanation:
+      "Keep a stack of indices whose warmer-day is still unknown, kept in decreasing temperature order. When today is warmer than the temperature at the stack top, we've found that day's answer — pop and record the gap.",
+    realWorldAnalogy:
+      "People waiting in line for 'the next taller person behind me'. As a taller person arrives, everyone shorter who was waiting gets their answer at once.",
+    visualExplanation:
+      "temps = [73,74,75,71,69,72,76,73]\nanswer = [1,1,4,2,1,1,0,0]",
+    approaches: [
+      {
+        title: "Look ahead for each day",
+        tier: "Brute Force",
+        idea: "For each day scan forward to the next warmer day.",
+        steps: ["For each i, scan j>i until temps[j]>temps[i]"],
+        time: "O(n^2)",
+        space: "O(1)",
+      },
+      {
+        title: "Monotonic decreasing stack",
+        tier: "Optimal",
+        idea: "Stack holds indices of unresolved days; resolve them when a warmer day appears.",
+        steps: [
+          "For each i, while stack top's temp < temps[i]: pop j, answer[j] = i - j",
+          "Push i",
+        ],
+        time: "O(n)",
+        space: "O(n)",
+      },
+    ],
+    dryRun: "Each index is pushed and popped at most once -> linear. Gap = poppedIndex distance.",
+    interviewTips: ["Store indices, not temperatures — you need the distance.", "This is the 'next greater element' template."],
+    commonMistakes: ["Storing temps instead of indices.", "Wrong comparison direction for the monotonic stack."],
+    followUps: ["Next Greater Element I/II (circular).", "Stock span problem."],
+    related: ["valid-parentheses"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def daily_temperatures(temperatures):
+    answer = [0] * len(temperatures)
+    stack = []  # indices, decreasing temps
+    for i, t in enumerate(temperatures):
+        while stack and temperatures[stack[-1]] < t:
+            j = stack.pop()
+            answer[j] = i - j
+        stack.append(i)
+    return answer`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `import java.util.*;
+
+class Solution {
+    public int[] dailyTemperatures(int[] temperatures) {
+        int n = temperatures.length;
+        int[] answer = new int[n];
+        Deque<Integer> stack = new ArrayDeque<>();
+        for (int i = 0; i < n; i++) {
+            while (!stack.isEmpty() && temperatures[stack.peek()] < temperatures[i]) {
+                int j = stack.pop();
+                answer[j] = i - j;
+            }
+            stack.push(i);
+        }
+        return answer;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function dailyTemperatures(temperatures) {
+  const answer = new Array(temperatures.length).fill(0);
+  const stack = [];
+  for (let i = 0; i < temperatures.length; i++) {
+    while (stack.length && temperatures[stack[stack.length - 1]] < temperatures[i]) {
+      const j = stack.pop();
+      answer[j] = i - j;
+    }
+    stack.push(i);
+  }
+  return answer;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static List<Integer> dailyTemperatures(List<Integer> temperatures) {
+        Integer n = temperatures.size();
+        List<Integer> answer = new List<Integer>();
+        for (Integer i = 0; i < n; i++) answer.add(0);
+        List<Integer> stack = new List<Integer>();
+        for (Integer i = 0; i < n; i++) {
+            while (!stack.isEmpty() && temperatures[stack[stack.size() - 1]] < temperatures[i]) {
+                Integer j = stack.remove(stack.size() - 1);
+                answer[j] = i - j;
+            }
+            stack.add(i);
+        }
+        return answer;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "generate-parentheses",
+    title: "Generate Parentheses",
+    difficulty: "Medium",
+    patterns: ["backtracking"],
+    topics: ["Backtracking", "Strings"],
+    companies: ["amazon", "google", "meta"],
+    sheets: ["neetcode150"],
+    frequency: 4,
+    statement:
+      "Given n pairs of parentheses, generate all combinations of well-formed parentheses.",
+    beginnerExplanation:
+      "Build strings character by character. You may add '(' while you still have opens left, and ')' only when there are more opens than closes already placed (so it stays valid). Recurse until the string is length 2n.",
+    realWorldAnalogy:
+      "Filling seats so every opener has a matching closer — you can't close a bracket you never opened, so you track how many are still open.",
+    visualExplanation:
+      "n=2 -> ['(())','()()']\nrule: add '(' if open<n; add ')' if close<open",
+    approaches: [
+      {
+        title: "Generate all, filter valid",
+        tier: "Brute Force",
+        idea: "Produce every 2n-length string of brackets, keep the valid ones.",
+        steps: ["Enumerate 2^(2n) strings", "Validate each"],
+        time: "O(2^(2n) * n)",
+        space: "O(n)",
+      },
+      {
+        title: "Backtracking with open/close counts",
+        tier: "Optimal",
+        idea: "Only ever extend a prefix that can still become valid.",
+        steps: [
+          "Track open and close used",
+          "Add '(' if open < n; recurse; undo",
+          "Add ')' if close < open; recurse; undo",
+          "Record string when length == 2n",
+        ],
+        time: "O(4^n / sqrt(n)) (Catalan)",
+        space: "O(n)",
+      },
+    ],
+    dryRun: "n=2: ( -> (( -> (()) ; ( -> () -> ()( -> ()()",
+    interviewTips: ["State the invariant: close can never exceed open.", "Mention the count is the nth Catalan number."],
+    commonMistakes: ["Allowing ')' when close == open.", "Forgetting the base case at length 2n."],
+    followUps: ["Count valid combinations without listing them.", "Different bracket types."],
+    related: ["valid-parentheses", "subsets"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def generate_parenthesis(n):
+    res = []
+    def backtrack(cur, open_n, close_n):
+        if len(cur) == 2 * n:
+            res.append(cur)
+            return
+        if open_n < n:
+            backtrack(cur + "(", open_n + 1, close_n)
+        if close_n < open_n:
+            backtrack(cur + ")", open_n, close_n + 1)
+    backtrack("", 0, 0)
+    return res`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `import java.util.*;
+
+class Solution {
+    public List<String> generateParenthesis(int n) {
+        List<String> res = new ArrayList<>();
+        backtrack(res, "", 0, 0, n);
+        return res;
+    }
+    private void backtrack(List<String> res, String cur, int open, int close, int n) {
+        if (cur.length() == 2 * n) { res.add(cur); return; }
+        if (open < n) backtrack(res, cur + "(", open + 1, close, n);
+        if (close < open) backtrack(res, cur + ")", open, close + 1, n);
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function generateParenthesis(n) {
+  const res = [];
+  function backtrack(cur, open, close) {
+    if (cur.length === 2 * n) { res.push(cur); return; }
+    if (open < n) backtrack(cur + "(", open + 1, close);
+    if (close < open) backtrack(cur + ")", open, close + 1);
+  }
+  backtrack("", 0, 0);
+  return res;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static List<String> generateParenthesis(Integer n) {
+        List<String> res = new List<String>();
+        backtrack(res, '', 0, 0, n);
+        return res;
+    }
+    private static void backtrack(List<String> res, String cur, Integer open, Integer close, Integer n) {
+        if (cur.length() == 2 * n) { res.add(cur); return; }
+        if (open < n) backtrack(res, cur + '(', open + 1, close, n);
+        if (close < open) backtrack(res, cur + ')', open, close + 1, n);
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "search-in-rotated-sorted-array",
+    title: "Search in Rotated Sorted Array",
+    difficulty: "Medium",
+    patterns: ["binary-search"],
+    topics: ["Arrays", "Binary Search"],
+    companies: ["amazon", "microsoft", "meta"],
+    sheets: ["blind75", "neetcode150"],
+    frequency: 5,
+    statement:
+      "A sorted array was rotated at an unknown pivot. Given the array and a target, return its index, or -1, in O(log n).",
+    beginnerExplanation:
+      "Even after rotation, at any midpoint at least one half is still perfectly sorted. Figure out which half is sorted, check whether the target falls inside that sorted half, and discard the other half.",
+    realWorldAnalogy:
+      "A clock face cut and rotated: from any position, one arc still runs in clean numeric order — use that ordered arc to decide which way to go.",
+    visualExplanation:
+      "nums = [4,5,6,7,0,1,2], target = 0\nmid=7 left sorted (4..7), 0 not in it -> go right\n...find index 4",
+    approaches: [
+      {
+        title: "Linear scan",
+        tier: "Brute Force",
+        idea: "Walk the array.",
+        steps: ["Return index when found"],
+        time: "O(n)",
+        space: "O(1)",
+      },
+      {
+        title: "Modified binary search",
+        tier: "Optimal",
+        idea: "Identify the sorted half each step and narrow accordingly.",
+        steps: [
+          "If nums[lo] <= nums[mid], left half is sorted",
+          "Target in [nums[lo], nums[mid]) -> hi=mid-1 else lo=mid+1",
+          "Otherwise right half is sorted; mirror the logic",
+        ],
+        time: "O(log n)",
+        space: "O(1)",
+      },
+    ],
+    dryRun: "[4,5,6,7,0,1,2] t=0: left sorted, 0 not in [4,7) -> search right -> found at 4",
+    interviewTips: ["Use <= when testing the left-sorted boundary to handle the mid==lo edge.", "Draw the two rotation cases."],
+    commonMistakes: ["Wrong inclusive/exclusive bound when checking the sorted half.", "Infinite loop from bad lo/hi updates."],
+    followUps: ["Array with duplicates (search II).", "Find the rotation pivot index."],
+    related: ["binary-search", "find-minimum-in-rotated-sorted-array"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def search(nums, target):
+    lo, hi = 0, len(nums) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if nums[mid] == target:
+            return mid
+        if nums[lo] <= nums[mid]:           # left sorted
+            if nums[lo] <= target < nums[mid]:
+                hi = mid - 1
+            else:
+                lo = mid + 1
+        else:                               # right sorted
+            if nums[mid] < target <= nums[hi]:
+                lo = mid + 1
+            else:
+                hi = mid - 1
+    return -1`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public int search(int[] nums, int target) {
+        int lo = 0, hi = nums.length - 1;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (nums[mid] == target) return mid;
+            if (nums[lo] <= nums[mid]) {
+                if (nums[lo] <= target && target < nums[mid]) hi = mid - 1;
+                else lo = mid + 1;
+            } else {
+                if (nums[mid] < target && target <= nums[hi]) lo = mid + 1;
+                else hi = mid - 1;
+            }
+        }
+        return -1;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function search(nums, target) {
+  let lo = 0, hi = nums.length - 1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    if (nums[mid] === target) return mid;
+    if (nums[lo] <= nums[mid]) {
+      if (nums[lo] <= target && target < nums[mid]) hi = mid - 1;
+      else lo = mid + 1;
+    } else {
+      if (nums[mid] < target && target <= nums[hi]) lo = mid + 1;
+      else hi = mid - 1;
+    }
+  }
+  return -1;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Integer search(List<Integer> nums, Integer target) {
+        Integer lo = 0, hi = nums.size() - 1;
+        while (lo <= hi) {
+            Integer mid = lo + (hi - lo) / 2;
+            if (nums[mid] == target) return mid;
+            if (nums[lo] <= nums[mid]) {
+                if (nums[lo] <= target && target < nums[mid]) hi = mid - 1;
+                else lo = mid + 1;
+            } else {
+                if (nums[mid] < target && target <= nums[hi]) lo = mid + 1;
+                else hi = mid - 1;
+            }
+        }
+        return -1;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "find-minimum-in-rotated-sorted-array",
+    title: "Find Minimum in Rotated Sorted Array",
+    difficulty: "Medium",
+    patterns: ["binary-search"],
+    topics: ["Arrays", "Binary Search"],
+    companies: ["amazon", "microsoft"],
+    sheets: ["neetcode150"],
+    frequency: 4,
+    statement:
+      "A sorted array of unique values was rotated. Find the minimum element in O(log n).",
+    beginnerExplanation:
+      "Compare the middle to the rightmost element. If mid is bigger than the right end, the minimum must be to the right of mid; otherwise it's at mid or to its left. Shrink accordingly.",
+    realWorldAnalogy:
+      "Finding the lowest point in a rotated ring by always stepping toward the side that looks 'out of order'.",
+    visualExplanation:
+      "nums = [4,5,6,7,0,1,2]\nmid=7 > right(2) -> min on right -> lo=mid+1\nconverges to 0",
+    approaches: [
+      {
+        title: "Linear min",
+        tier: "Brute Force",
+        idea: "Scan for the smallest.",
+        steps: ["Track minimum across one pass"],
+        time: "O(n)",
+        space: "O(1)",
+      },
+      {
+        title: "Binary search vs right end",
+        tier: "Optimal",
+        idea: "The inflection (minimum) is where order breaks; compare mid to hi.",
+        steps: [
+          "If nums[mid] > nums[hi], min is right: lo = mid + 1",
+          "Else min is at mid or left: hi = mid",
+          "Stop when lo == hi",
+        ],
+        time: "O(log n)",
+        space: "O(1)",
+      },
+    ],
+    dryRun: "[3,4,5,1,2]: mid=5>2 -> lo=mid+1; mid=1<2 -> hi=mid; converge to 1",
+    interviewTips: ["Compare to nums[hi], NOT nums[lo] — comparing to lo breaks on a non-rotated array.", "Use hi = mid (not mid-1) since mid could be the answer."],
+    commonMistakes: ["Comparing mid to lo.", "Setting hi = mid - 1 and skipping the true minimum."],
+    followUps: ["With duplicates (harder, O(n) worst case).", "Return the pivot index too."],
+    related: ["search-in-rotated-sorted-array", "binary-search"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def find_min(nums):
+    lo, hi = 0, len(nums) - 1
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if nums[mid] > nums[hi]:
+            lo = mid + 1
+        else:
+            hi = mid
+    return nums[lo]`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public int findMin(int[] nums) {
+        int lo = 0, hi = nums.length - 1;
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (nums[mid] > nums[hi]) lo = mid + 1;
+            else hi = mid;
+        }
+        return nums[lo];
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function findMin(nums) {
+  let lo = 0, hi = nums.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (nums[mid] > nums[hi]) lo = mid + 1;
+    else hi = mid;
+  }
+  return nums[lo];
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Integer findMin(List<Integer> nums) {
+        Integer lo = 0, hi = nums.size() - 1;
+        while (lo < hi) {
+            Integer mid = lo + (hi - lo) / 2;
+            if (nums[mid] > nums[hi]) lo = mid + 1;
+            else hi = mid;
+        }
+        return nums[lo];
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "koko-eating-bananas",
+    title: "Koko Eating Bananas",
+    difficulty: "Medium",
+    patterns: ["binary-search"],
+    topics: ["Arrays", "Binary Search"],
+    companies: ["amazon", "google"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "Koko eats bananas at speed k per hour, finishing one pile per hour (leftovers wait). Given `piles` and `h` hours, find the minimum integer k to finish all piles within h hours.",
+    beginnerExplanation:
+      "This is 'binary search on the answer'. Speeds from 1 to max(pile) are monotonic: if speed k works, any faster speed also works. Binary search the smallest k whose total hours fit within h.",
+    realWorldAnalogy:
+      "Tuning a machine's throughput dial to the lowest setting that still finishes the job before the deadline — guess a setting, check if it's fast enough, adjust.",
+    visualExplanation:
+      "piles=[3,6,7,11], h=8\nspeed 4 -> ceil(3/4)+ceil(6/4)+ceil(7/4)+ceil(11/4)=1+2+2+3=8 <=8 OK\nspeed 3 too slow -> answer 4",
+    approaches: [
+      {
+        title: "Try every speed",
+        tier: "Brute Force",
+        idea: "Increment k from 1 until hours fit.",
+        steps: ["For k=1..max: compute hours; return first that fits"],
+        time: "O(max * n)",
+        space: "O(1)",
+      },
+      {
+        title: "Binary search on speed",
+        tier: "Optimal",
+        idea: "Feasibility is monotonic in k; binary search the boundary.",
+        steps: [
+          "lo=1, hi=max(piles)",
+          "mid feasible (sum of ceil(pile/mid) <= h)? hi=mid else lo=mid+1",
+          "Return lo",
+        ],
+        time: "O(n log max)",
+        space: "O(1)",
+      },
+    ],
+    dryRun: "lo=1 hi=11; mid=6 fits -> hi=6; mid=3 too slow -> lo=4; mid=5 fits -> hi=5; mid=4 fits -> hi=4 -> 4",
+    interviewTips: ["Name the pattern: 'binary search on the answer'.", "Use ceil division via (pile + k - 1) / k to avoid floats."],
+    commonMistakes: ["Float division rounding errors.", "Wrong hi (must be the largest pile)."],
+    followUps: ["Minimum capacity to ship within D days.", "Split array into k subarrays minimising the max sum."],
+    related: ["binary-search"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `import math
+
+def min_eating_speed(piles, h):
+    lo, hi = 1, max(piles)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        hours = sum((p + mid - 1) // mid for p in piles)
+        if hours <= h:
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public int minEatingSpeed(int[] piles, int h) {
+        int lo = 1, hi = 0;
+        for (int p : piles) hi = Math.max(hi, p);
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            long hours = 0;
+            for (int p : piles) hours += (p + mid - 1) / mid;
+            if (hours <= h) hi = mid;
+            else lo = mid + 1;
+        }
+        return lo;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function minEatingSpeed(piles, h) {
+  let lo = 1, hi = Math.max(...piles);
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    let hours = 0;
+    for (const p of piles) hours += Math.ceil(p / mid);
+    if (hours <= h) hi = mid;
+    else lo = mid + 1;
+  }
+  return lo;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Integer minEatingSpeed(List<Integer> piles, Integer h) {
+        Integer lo = 1, hi = 0;
+        for (Integer p : piles) hi = Math.max(hi, p);
+        while (lo < hi) {
+            Integer mid = lo + (hi - lo) / 2;
+            Integer hours = 0;
+            for (Integer p : piles) hours += (p + mid - 1) / mid;
+            if (hours <= h) hi = mid;
+            else lo = mid + 1;
+        }
+        return lo;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "remove-nth-node-from-end-of-list",
+    title: "Remove Nth Node From End of List",
+    difficulty: "Medium",
+    patterns: ["fast-slow-pointers", "linked-list"],
+    topics: ["Linked Lists"],
+    companies: ["amazon", "meta", "microsoft"],
+    sheets: ["blind75", "neetcode150"],
+    frequency: 4,
+    statement:
+      "Given the head of a linked list, remove the nth node from the end and return the head. Do it in one pass.",
+    beginnerExplanation:
+      "Use two pointers with a fixed gap of n. Advance the fast pointer n steps first; then move both until fast hits the end. Now slow sits just before the node to delete. A dummy head handles deleting the first node cleanly.",
+    realWorldAnalogy:
+      "Two runners keeping exactly n metres apart. When the front runner crosses the finish, the back runner is exactly n from the end — right where you need to cut.",
+    visualExplanation:
+      "1->2->3->4->5, n=2\nfast +2, then both move; slow stops at 3 -> link 3.next to 5",
+    approaches: [
+      {
+        title: "Two passes",
+        tier: "Better",
+        idea: "Count length, then walk to length-n.",
+        steps: ["Find length L", "Walk to node L-n-1 and relink"],
+        time: "O(n)",
+        space: "O(1)",
+      },
+      {
+        title: "Two pointers, one pass",
+        tier: "Optimal",
+        idea: "Maintain an n-gap between fast and slow using a dummy head.",
+        steps: [
+          "dummy -> head; fast = slow = dummy",
+          "Advance fast n+1 steps",
+          "Move both until fast is null; slow.next = slow.next.next",
+        ],
+        time: "O(n)",
+        space: "O(1)",
+      },
+    ],
+    dryRun: "dummy->1->2->3->4->5, n=2: fast to node3 region; slow ends at 3; slow.next=5",
+    interviewTips: ["Use a dummy node so removing the head needs no special case.", "Advance fast n+1 (not n) when starting from dummy."],
+    commonMistakes: ["Off-by-one in the initial fast advance.", "Not handling removal of the head node."],
+    followUps: ["Remove the nth node from the start.", "Detect if n exceeds the list length."],
+    related: ["reverse-linked-list", "linked-list-cycle"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def remove_nth_from_end(head, n):
+    dummy = ListNode(0, head)
+    fast = slow = dummy
+    for _ in range(n + 1):
+        fast = fast.next
+    while fast:
+        fast = fast.next
+        slow = slow.next
+    slow.next = slow.next.next
+    return dummy.next`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dummy = new ListNode(0, head);
+        ListNode fast = dummy, slow = dummy;
+        for (int i = 0; i < n + 1; i++) fast = fast.next;
+        while (fast != null) { fast = fast.next; slow = slow.next; }
+        slow.next = slow.next.next;
+        return dummy.next;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function removeNthFromEnd(head, n) {
+  const dummy = new ListNode(0, head);
+  let fast = dummy, slow = dummy;
+  for (let i = 0; i < n + 1; i++) fast = fast.next;
+  while (fast) { fast = fast.next; slow = slow.next; }
+  slow.next = slow.next.next;
+  return dummy.next;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static ListNode removeNthFromEnd(ListNode head, Integer n) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode fast = dummy, slow = dummy;
+        for (Integer i = 0; i < n + 1; i++) fast = fast.next;
+        while (fast != null) { fast = fast.next; slow = slow.next; }
+        slow.next = slow.next.next;
+        return dummy.next;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "add-two-numbers",
+    title: "Add Two Numbers",
+    difficulty: "Medium",
+    patterns: ["linked-list"],
+    topics: ["Linked Lists", "Math"],
+    companies: ["amazon", "microsoft", "adobe"],
+    sheets: ["neetcode150"],
+    frequency: 4,
+    statement:
+      "Two non-empty linked lists represent two non-negative integers with digits stored in reverse order. Add them and return the sum as a linked list.",
+    beginnerExplanation:
+      "Because digits are reversed, the heads are the ones places — perfect for grade-school addition. Walk both lists adding digit by digit, carrying the tens into the next node.",
+    realWorldAnalogy:
+      "Adding two numbers on paper from right to left, carrying the 1 — except the lists already hand you the rightmost digit first.",
+    visualExplanation:
+      "(2->4->3) + (5->6->4) = 342 + 465 = 807 -> 7->0->8",
+    approaches: [
+      {
+        title: "Digit-by-digit with carry",
+        tier: "Optimal",
+        idea: "Sum corresponding digits plus carry, build a new list.",
+        steps: [
+          "carry=0, dummy head",
+          "While either list or carry remains: sum = a + b + carry",
+          "Append (sum % 10); carry = sum / 10",
+        ],
+        time: "O(max(m,n))",
+        space: "O(max(m,n))",
+      },
+    ],
+    dryRun: "2+5=7 c0; 4+6=10 ->0 c1; 3+4+1=8 -> 7->0->8",
+    interviewTips: ["A dummy head keeps the build loop clean.", "Don't forget a trailing carry node."],
+    commonMistakes: ["Dropping the final carry.", "Mishandling lists of different lengths."],
+    followUps: ["Digits stored in forward order (use stacks).", "Add k lists."],
+    related: ["merge-two-sorted-lists", "reverse-linked-list"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def add_two_numbers(l1, l2):
+    dummy = ListNode(0)
+    cur = dummy
+    carry = 0
+    while l1 or l2 or carry:
+        total = carry
+        if l1: total += l1.val; l1 = l1.next
+        if l2: total += l2.val; l2 = l2.next
+        carry = total // 10
+        cur.next = ListNode(total % 10)
+        cur = cur.next
+    return dummy.next`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode(0), cur = dummy;
+        int carry = 0;
+        while (l1 != null || l2 != null || carry != 0) {
+            int total = carry;
+            if (l1 != null) { total += l1.val; l1 = l1.next; }
+            if (l2 != null) { total += l2.val; l2 = l2.next; }
+            carry = total / 10;
+            cur.next = new ListNode(total % 10);
+            cur = cur.next;
+        }
+        return dummy.next;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function addTwoNumbers(l1, l2) {
+  const dummy = new ListNode(0);
+  let cur = dummy, carry = 0;
+  while (l1 || l2 || carry) {
+    let total = carry;
+    if (l1) { total += l1.val; l1 = l1.next; }
+    if (l2) { total += l2.val; l2 = l2.next; }
+    carry = Math.floor(total / 10);
+    cur.next = new ListNode(total % 10);
+    cur = cur.next;
+  }
+  return dummy.next;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode(0), cur = dummy;
+        Integer carry = 0;
+        while (l1 != null || l2 != null || carry != 0) {
+            Integer total = carry;
+            if (l1 != null) { total += l1.val; l1 = l1.next; }
+            if (l2 != null) { total += l2.val; l2 = l2.next; }
+            carry = total / 10;
+            cur.next = new ListNode(Math.mod(total, 10));
+            cur = cur.next;
+        }
+        return dummy.next;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "reorder-list",
+    title: "Reorder List",
+    difficulty: "Medium",
+    patterns: ["linked-list", "fast-slow-pointers"],
+    topics: ["Linked Lists"],
+    companies: ["amazon", "meta"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "Reorder a list L0->L1->...->Ln so it becomes L0->Ln->L1->Ln-1->... You may not change node values, only relink nodes.",
+    beginnerExplanation:
+      "Three moves: find the middle (slow/fast pointers), reverse the second half, then weave the two halves together one node at a time.",
+    realWorldAnalogy:
+      "Splitting a deck in half, flipping the bottom half, then interleaving the two stacks like a riffle shuffle.",
+    visualExplanation:
+      "1->2->3->4->5\nmid: 3 | reverse 2nd: 5->4 | weave: 1->5->2->4->3",
+    approaches: [
+      {
+        title: "Store in array, two pointers",
+        tier: "Better",
+        idea: "Copy nodes to an array and relink from both ends.",
+        steps: ["Push nodes to a list", "Relink alternating front/back"],
+        time: "O(n)",
+        space: "O(n)",
+      },
+      {
+        title: "Mid + reverse + merge",
+        tier: "Optimal",
+        idea: "Pointer tricks only — constant extra space.",
+        steps: [
+          "Find middle with slow/fast",
+          "Reverse the second half",
+          "Merge the two halves alternately",
+        ],
+        time: "O(n)",
+        space: "O(1)",
+      },
+    ],
+    dryRun: "find mid 3; reverse 4->5 to 5->4; merge 1,5,2,4,3",
+    interviewTips: ["The three sub-routines (mid, reverse, merge) are each reusable interview building blocks.", "Cut the list at the middle to avoid a cycle when merging."],
+    commonMistakes: ["Creating a cycle by not terminating the first half.", "Off-by-one choosing the middle."],
+    followUps: ["Reverse in groups of k.", "Detect palindrome list (mid + reverse)."],
+    related: ["reverse-linked-list", "linked-list-cycle"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def reorder_list(head):
+    slow, fast = head, head.next
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+    second = slow.next
+    slow.next = None
+    prev = None
+    while second:
+        nxt = second.next
+        second.next = prev
+        prev = second
+        second = nxt
+    first, second = head, prev
+    while second:
+        f, s = first.next, second.next
+        first.next = second
+        second.next = f
+        first, second = f, s`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public void reorderList(ListNode head) {
+        ListNode slow = head, fast = head.next;
+        while (fast != null && fast.next != null) { slow = slow.next; fast = fast.next.next; }
+        ListNode second = slow.next; slow.next = null;
+        ListNode prev = null;
+        while (second != null) { ListNode nxt = second.next; second.next = prev; prev = second; second = nxt; }
+        ListNode first = head; second = prev;
+        while (second != null) {
+            ListNode f = first.next, s = second.next;
+            first.next = second; second.next = f;
+            first = f; second = s;
+        }
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function reorderList(head) {
+  let slow = head, fast = head.next;
+  while (fast && fast.next) { slow = slow.next; fast = fast.next.next; }
+  let second = slow.next; slow.next = null;
+  let prev = null;
+  while (second) { const nxt = second.next; second.next = prev; prev = second; second = nxt; }
+  let first = head; second = prev;
+  while (second) {
+    const f = first.next, s = second.next;
+    first.next = second; second.next = f;
+    first = f; second = s;
+  }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static void reorderList(ListNode head) {
+        ListNode slow = head, fast = head.next;
+        while (fast != null && fast.next != null) { slow = slow.next; fast = fast.next.next; }
+        ListNode second = slow.next; slow.next = null;
+        ListNode prev = null;
+        while (second != null) { ListNode nxt = second.next; second.next = prev; prev = second; second = nxt; }
+        ListNode first = head; second = prev;
+        while (second != null) {
+            ListNode f = first.next, s = second.next;
+            first.next = second; second.next = f;
+            first = f; second = s;
+        }
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "linked-list-cycle-ii",
+    title: "Linked List Cycle II",
+    difficulty: "Medium",
+    patterns: ["fast-slow-pointers"],
+    topics: ["Linked Lists"],
+    companies: ["amazon", "microsoft"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "Given the head of a linked list, return the node where the cycle begins. If there is no cycle, return null. O(1) space.",
+    beginnerExplanation:
+      "First detect a cycle with slow/fast (Floyd). After they meet, reset one pointer to the head and advance both one step at a time — they meet again exactly at the cycle's entrance (a neat consequence of the distance math).",
+    realWorldAnalogy:
+      "Two runners on a looped track meet somewhere on the loop; if one walks back to the start and both then pace evenly, they reunite precisely at the on-ramp to the loop.",
+    visualExplanation:
+      "3->2->0->-4->(back to 2)\nmeet inside loop, reset one to head, step together -> meet at node 2",
+    approaches: [
+      {
+        title: "Hash set of nodes",
+        tier: "Better",
+        idea: "First node seen twice is the entry.",
+        steps: ["Walk storing visited nodes", "Return the first repeat"],
+        time: "O(n)",
+        space: "O(n)",
+      },
+      {
+        title: "Floyd's two-phase",
+        tier: "Optimal",
+        idea: "Detect the meeting point, then find the entry via the head reset.",
+        steps: [
+          "Phase 1: slow/fast until they meet (or fast hits null -> no cycle)",
+          "Phase 2: move one pointer to head; advance both by 1",
+          "Their meeting node is the cycle start",
+        ],
+        time: "O(n)",
+        space: "O(1)",
+      },
+    ],
+    dryRun: "After meeting in the loop, head and meet-point converge at the entry node.",
+    interviewTips: ["Be ready to sketch the distance proof (head-to-entry = meet-to-entry).", "Guard fast and fast.next for the no-cycle case."],
+    commonMistakes: ["Forgetting the no-cycle return.", "Resetting the wrong pointer."],
+    followUps: ["Return the cycle length.", "Detect a cycle in a functional graph."],
+    related: ["linked-list-cycle"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def detect_cycle(head):
+    slow = fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow is fast:
+            p = head
+            while p is not slow:
+                p = p.next
+                slow = slow.next
+            return p
+    return None`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public ListNode detectCycle(ListNode head) {
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                ListNode p = head;
+                while (p != slow) { p = p.next; slow = slow.next; }
+                return p;
+            }
+        }
+        return null;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function detectCycle(head) {
+  let slow = head, fast = head;
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+    if (slow === fast) {
+      let p = head;
+      while (p !== slow) { p = p.next; slow = slow.next; }
+      return p;
+    }
+  }
+  return null;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static ListNode detectCycle(ListNode head) {
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                ListNode p = head;
+                while (p != slow) { p = p.next; slow = slow.next; }
+                return p;
+            }
+        }
+        return null;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "same-tree",
+    title: "Same Tree",
+    difficulty: "Easy",
+    patterns: ["trees"],
+    topics: ["Trees", "Recursion"],
+    companies: ["amazon", "microsoft"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "Given the roots of two binary trees, return true if they are structurally identical and every corresponding node has the same value.",
+    beginnerExplanation:
+      "Compare the two trees node by node, in lockstep. Both empty here? equal. One empty or values differ? not equal. Otherwise recurse on left-vs-left and right-vs-right.",
+    realWorldAnalogy:
+      "Holding two mobiles (the hanging kind) side by side and checking that every arm and ornament matches in shape and label.",
+    visualExplanation: "p: 1(2,3)  q: 1(2,3) -> same\np: 1(2,_) q: 1(_,2) -> different shape",
+    approaches: [
+      {
+        title: "Parallel recursion",
+        tier: "Optimal",
+        idea: "Recurse both trees simultaneously.",
+        steps: [
+          "If both null -> true",
+          "If one null or values differ -> false",
+          "Return sameTree(left,left) AND sameTree(right,right)",
+        ],
+        time: "O(n)",
+        space: "O(h)",
+      },
+    ],
+    dryRun: "compare roots, then (left,left) and (right,right) recursively.",
+    interviewTips: ["Handle the both-null base case before dereferencing.", "Generalises to 'Subtree of Another Tree'."],
+    commonMistakes: ["NPE from checking values before null checks.", "Comparing left-to-right mirror by accident."],
+    followUps: ["Symmetric tree (mirror).", "Subtree check."],
+    related: ["invert-binary-tree", "maximum-depth-of-binary-tree"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def is_same_tree(p, q):
+    if not p and not q:
+        return True
+    if not p or not q or p.val != q.val:
+        return False
+    return is_same_tree(p.left, q.left) and is_same_tree(p.right, q.right)`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) return true;
+        if (p == null || q == null || p.val != q.val) return false;
+        return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function isSameTree(p, q) {
+  if (!p && !q) return true;
+  if (!p || !q || p.val !== q.val) return false;
+  return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) return true;
+        if (p == null || q == null || p.val != q.val) return false;
+        return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "lowest-common-ancestor-of-a-bst",
+    title: "Lowest Common Ancestor of a BST",
+    difficulty: "Medium",
+    patterns: ["trees", "binary-search"],
+    topics: ["Trees", "Binary Search Trees"],
+    companies: ["amazon", "meta", "microsoft"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "Given a BST and two nodes p and q, return their lowest common ancestor (the deepest node that has both as descendants).",
+    beginnerExplanation:
+      "Use the BST ordering. Start at the root: if both p and q are larger, go right; if both smaller, go left. The first node where they split (one on each side, or equal to the node) is the LCA.",
+    realWorldAnalogy:
+      "Two people descending a family tree following 'go left if smaller, right if bigger' — the room where their paths first diverge is their closest shared ancestor.",
+    visualExplanation:
+      "root 6, p=2 q=8 -> 2<6<8 split at 6 -> LCA 6\np=2 q=4 -> both <6 go left to 2; 4>2 split -> LCA 2",
+    approaches: [
+      {
+        title: "BST walk",
+        tier: "Optimal",
+        idea: "Descend choosing the side both targets fall on.",
+        steps: [
+          "If both p,q > node.val -> go right",
+          "If both < node.val -> go left",
+          "Else this node is the split point -> return it",
+        ],
+        time: "O(h)",
+        space: "O(1)",
+      },
+    ],
+    dryRun: "root6 p2 q8: 2 and 8 straddle 6 -> return 6",
+    interviewTips: ["Exploit the BST property — don't do a generic tree LCA here.", "Iterative version is O(1) space."],
+    commonMistakes: ["Treating it as a generic binary tree (slower).", "Missing the equality (a node can be its own ancestor)."],
+    followUps: ["LCA in a generic binary tree.", "LCA with parent pointers."],
+    related: ["validate-binary-search-tree", "same-tree"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def lowest_common_ancestor(root, p, q):
+    node = root
+    while node:
+        if p.val > node.val and q.val > node.val:
+            node = node.right
+        elif p.val < node.val and q.val < node.val:
+            node = node.left
+        else:
+            return node`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        TreeNode node = root;
+        while (node != null) {
+            if (p.val > node.val && q.val > node.val) node = node.right;
+            else if (p.val < node.val && q.val < node.val) node = node.left;
+            else return node;
+        }
+        return null;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function lowestCommonAncestor(root, p, q) {
+  let node = root;
+  while (node) {
+    if (p.val > node.val && q.val > node.val) node = node.right;
+    else if (p.val < node.val && q.val < node.val) node = node.left;
+    else return node;
+  }
+  return null;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        TreeNode node = root;
+        while (node != null) {
+            if (p.val > node.val && q.val > node.val) node = node.right;
+            else if (p.val < node.val && q.val < node.val) node = node.left;
+            else return node;
+        }
+        return null;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "binary-tree-level-order-traversal",
+    title: "Binary Tree Level Order Traversal",
+    difficulty: "Medium",
+    patterns: ["trees", "graphs"],
+    topics: ["Trees"],
+    companies: ["amazon", "meta", "microsoft"],
+    sheets: ["neetcode150"],
+    frequency: 4,
+    statement:
+      "Given the root of a binary tree, return its level-order traversal: a list of levels, each a list of node values left to right.",
+    beginnerExplanation:
+      "This is breadth-first search. Use a queue; process the tree one full level at a time by recording the queue's size at the start of each level, then dequeuing exactly that many nodes and enqueuing their children.",
+    realWorldAnalogy:
+      "Reading a family tree generation by generation, left to right, before moving to the next generation.",
+    visualExplanation: "3(9,20(15,7)) -> [[3],[9,20],[15,7]]",
+    approaches: [
+      {
+        title: "BFS with level sizing",
+        tier: "Optimal",
+        idea: "Snapshot the queue size to know where each level ends.",
+        steps: [
+          "Enqueue root",
+          "While queue: take levelSize = queue length; pop that many, collect values, enqueue children",
+          "Append the level list",
+        ],
+        time: "O(n)",
+        space: "O(n)",
+      },
+    ],
+    dryRun: "queue[3] -> level[3]; queue[9,20] -> level[9,20]; queue[15,7] -> level[15,7]",
+    interviewTips: ["Capturing the level size up front is the clean way to group levels.", "DFS with a depth index also works."],
+    commonMistakes: ["Mixing levels by not fixing the size before the inner loop.", "Forgetting the empty-tree case."],
+    followUps: ["Zigzag level order.", "Right side view (last node of each level)."],
+    related: ["maximum-depth-of-binary-tree", "number-of-islands"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `from collections import deque
+
+def level_order(root):
+    res = []
+    if not root:
+        return res
+    q = deque([root])
+    while q:
+        level = []
+        for _ in range(len(q)):
+            node = q.popleft()
+            level.append(node.val)
+            if node.left: q.append(node.left)
+            if node.right: q.append(node.right)
+        res.append(level)
+    return res`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `import java.util.*;
+
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) return res;
+        Queue<TreeNode> q = new LinkedList<>();
+        q.add(root);
+        while (!q.isEmpty()) {
+            int size = q.size();
+            List<Integer> level = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = q.poll();
+                level.add(node.val);
+                if (node.left != null) q.add(node.left);
+                if (node.right != null) q.add(node.right);
+            }
+            res.add(level);
+        }
+        return res;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function levelOrder(root) {
+  const res = [];
+  if (!root) return res;
+  let q = [root];
+  while (q.length) {
+    const level = [];
+    const next = [];
+    for (const node of q) {
+      level.push(node.val);
+      if (node.left) next.push(node.left);
+      if (node.right) next.push(node.right);
+    }
+    res.push(level);
+    q = next;
+  }
+  return res;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new List<List<Integer>>();
+        if (root == null) return res;
+        List<TreeNode> q = new List<TreeNode>{ root };
+        while (!q.isEmpty()) {
+            List<Integer> level = new List<Integer>();
+            List<TreeNode> next = new List<TreeNode>();
+            for (TreeNode node : q) {
+                level.add(node.val);
+                if (node.left != null) next.add(node.left);
+                if (node.right != null) next.add(node.right);
+            }
+            res.add(level);
+            q = next;
+        }
+        return res;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "validate-binary-search-tree",
+    title: "Validate Binary Search Tree",
+    difficulty: "Medium",
+    patterns: ["trees"],
+    topics: ["Trees", "Binary Search Trees"],
+    companies: ["amazon", "meta", "microsoft"],
+    sheets: ["neetcode150"],
+    frequency: 4,
+    statement:
+      "Given the root of a binary tree, determine whether it is a valid BST (every left subtree < node < every right subtree).",
+    beginnerExplanation:
+      "It's not enough to check each node against its immediate children — a deep descendant could violate the rule. Carry a valid (low, high) range down the recursion; each node must fall strictly inside its range, and it tightens the range for its children.",
+    realWorldAnalogy:
+      "Each room in a sorted building must fit within the floor's allowed number range; entering a left wing lowers the ceiling, a right wing raises the floor.",
+    visualExplanation:
+      "valid: 5(3,7)\ninvalid: 5(1,(4)... where a right-subtree node 4 < 5 sneaks below the root bound",
+    approaches: [
+      {
+        title: "Check node vs children only",
+        tier: "Brute Force",
+        idea: "Naively compare each node to its direct children (WRONG — misses deep violations).",
+        steps: ["Compare node to left/right child"],
+        time: "O(n)",
+        space: "O(h)",
+      },
+      {
+        title: "Range-bounded recursion",
+        tier: "Optimal",
+        idea: "Pass down (low, high) bounds; tighten as you descend.",
+        steps: [
+          "Each node must satisfy low < val < high",
+          "Recurse left with high = val, right with low = val",
+        ],
+        time: "O(n)",
+        space: "O(h)",
+      },
+    ],
+    dryRun: "root5 (-inf,inf); left3 (-inf,5); right7 (5,inf); all inside -> valid",
+    interviewTips: ["The (low, high) bounds trick is the canonical answer.", "An in-order traversal must be strictly increasing — an alternative."],
+    commonMistakes: ["Only comparing to immediate children.", "Using <= where strict < is required (no duplicates)."],
+    followUps: ["Recover a BST with two swapped nodes.", "Count BST subtrees."],
+    related: ["lowest-common-ancestor-of-a-bst", "same-tree"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def is_valid_bst(root):
+    def valid(node, low, high):
+        if not node:
+            return True
+        if not (low < node.val < high):
+            return False
+        return valid(node.left, low, node.val) and valid(node.right, node.val, high)
+    return valid(root, float("-inf"), float("inf"))`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public boolean isValidBST(TreeNode root) {
+        return valid(root, Long.MIN_VALUE, Long.MAX_VALUE);
+    }
+    private boolean valid(TreeNode node, long low, long high) {
+        if (node == null) return true;
+        if (node.val <= low || node.val >= high) return false;
+        return valid(node.left, low, node.val) && valid(node.right, node.val, high);
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function isValidBST(root) {
+  function valid(node, low, high) {
+    if (!node) return true;
+    if (node.val <= low || node.val >= high) return false;
+    return valid(node.left, low, node.val) && valid(node.right, node.val, high);
+  }
+  return valid(root, -Infinity, Infinity);
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Boolean isValidBST(TreeNode root) {
+        return valid(root, null, null);
+    }
+    private static Boolean valid(TreeNode node, Integer low, Integer high) {
+        if (node == null) return true;
+        if ((low != null && node.val <= low) || (high != null && node.val >= high)) return false;
+        return valid(node.left, low, node.val) && valid(node.right, node.val, high);
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "kth-largest-element-in-an-array",
+    title: "Kth Largest Element in an Array",
+    difficulty: "Medium",
+    patterns: ["heap"],
+    topics: ["Arrays", "Heaps"],
+    companies: ["amazon", "meta", "google"],
+    sheets: ["neetcode150"],
+    frequency: 4,
+    statement: "Return the kth largest element in an unsorted array (the kth largest in sorted order, not the kth distinct).",
+    beginnerExplanation:
+      "Keep a min-heap of size k. Push elements; whenever the heap exceeds size k, pop the smallest. After processing everything, the heap's smallest element is the kth largest overall.",
+    realWorldAnalogy:
+      "A talent show keeping only the top k scores on a leaderboard — each new score bumps the lowest survivor; the lowest of the final k is your answer.",
+    visualExplanation: "nums=[3,2,1,5,6,4], k=2 -> sorted desc [6,5,..] -> 2nd largest = 5",
+    approaches: [
+      {
+        title: "Sort",
+        tier: "Better",
+        idea: "Sort and index from the end.",
+        steps: ["Sort ascending", "Return nums[n-k]"],
+        time: "O(n log n)",
+        space: "O(1)",
+      },
+      {
+        title: "Size-k min-heap",
+        tier: "Optimal",
+        idea: "Maintain only the k largest seen so far.",
+        steps: ["Push each value", "If heap size > k pop the min", "Return heap top"],
+        time: "O(n log k)",
+        space: "O(k)",
+      },
+    ],
+    dryRun: "k=2: heap keeps 2 largest -> [5,6]; min is 5 -> answer",
+    interviewTips: ["Quickselect gives O(n) average if asked to beat the heap.", "Min-heap of size k beats a max-heap of size n when k is small."],
+    commonMistakes: ["Confusing kth largest with kth smallest indexing.", "Building an n-sized max-heap when a k-sized min-heap suffices."],
+    followUps: ["Quickselect O(n) average.", "Kth largest in a stream (running heap)."],
+    related: ["k-closest-points-to-origin", "top-k-frequent-elements"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `import heapq
+
+def find_kth_largest(nums, k):
+    heap = []
+    for n in nums:
+        heapq.heappush(heap, n)
+        if len(heap) > k:
+            heapq.heappop(heap)
+    return heap[0]`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `import java.util.*;
+
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        PriorityQueue<Integer> heap = new PriorityQueue<>();
+        for (int n : nums) {
+            heap.offer(n);
+            if (heap.size() > k) heap.poll();
+        }
+        return heap.peek();
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function findKthLargest(nums, k) {
+  // Sort-based (clear and correct); a size-k min-heap gives O(n log k).
+  nums.sort((a, b) => a - b);
+  return nums[nums.length - k];
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Integer findKthLargest(List<Integer> nums, Integer k) {
+        nums.sort();
+        return nums[nums.size() - k];
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "last-stone-weight",
+    title: "Last Stone Weight",
+    difficulty: "Easy",
+    patterns: ["heap"],
+    topics: ["Heaps", "Arrays"],
+    companies: ["amazon"],
+    sheets: ["neetcode150"],
+    frequency: 2,
+    statement:
+      "Each turn, smash the two heaviest stones; if unequal, the difference returns to the pile. Return the weight of the last remaining stone (or 0).",
+    beginnerExplanation:
+      "You repeatedly need the two largest values, so a max-heap is ideal. Pop the two biggest, push back their difference if non-zero, and repeat until at most one stone remains.",
+    realWorldAnalogy:
+      "A demolition derby where the two biggest wreckers collide each round; the dented survivor rejoins the lineup until one (or none) is left.",
+    visualExplanation: "[2,7,4,1,8,1] -> smash 8,7->1 ; [2,4,1,1,1] -> 4,2->2 ; ... last = 1",
+    approaches: [
+      {
+        title: "Max-heap simulation",
+        tier: "Optimal",
+        idea: "Always extract the two largest via a max-heap.",
+        steps: ["Heapify", "Pop two largest; push |diff| if > 0", "Repeat until <=1 stone"],
+        time: "O(n log n)",
+        space: "O(n)",
+      },
+    ],
+    dryRun: "max-heap: pop 8,7 -> push 1; continue until one stone or empty",
+    interviewTips: ["Python's heapq is a min-heap — negate values for a max-heap.", "Edge case: empty pile returns 0."],
+    commonMistakes: ["Forgetting Python heapq is min-heap.", "Pushing a zero difference (harmless but unnecessary)."],
+    followUps: ["Last Stone Weight II (partition DP).", "K heaviest each round."],
+    related: ["kth-largest-element-in-an-array"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `import heapq
+
+def last_stone_weight(stones):
+    heap = [-s for s in stones]
+    heapq.heapify(heap)
+    while len(heap) > 1:
+        a = -heapq.heappop(heap)
+        b = -heapq.heappop(heap)
+        if a != b:
+            heapq.heappush(heap, -(a - b))
+    return -heap[0] if heap else 0`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `import java.util.*;
+
+class Solution {
+    public int lastStoneWeight(int[] stones) {
+        PriorityQueue<Integer> heap = new PriorityQueue<>(Collections.reverseOrder());
+        for (int s : stones) heap.offer(s);
+        while (heap.size() > 1) {
+            int a = heap.poll(), b = heap.poll();
+            if (a != b) heap.offer(a - b);
+        }
+        return heap.isEmpty() ? 0 : heap.peek();
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function lastStoneWeight(stones) {
+  const heap = [...stones];
+  while (heap.length > 1) {
+    heap.sort((a, b) => a - b);
+    const a = heap.pop(), b = heap.pop();
+    if (a !== b) heap.push(a - b);
+  }
+  return heap.length ? heap[0] : 0;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Integer lastStoneWeight(List<Integer> stones) {
+        List<Integer> heap = stones.clone();
+        while (heap.size() > 1) {
+            heap.sort();
+            Integer a = heap.remove(heap.size() - 1);
+            Integer b = heap.remove(heap.size() - 1);
+            if (a != b) heap.add(a - b);
+        }
+        return heap.isEmpty() ? 0 : heap[0];
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "k-closest-points-to-origin",
+    title: "K Closest Points to Origin",
+    difficulty: "Medium",
+    patterns: ["heap"],
+    topics: ["Heaps", "Arrays", "Math"],
+    companies: ["amazon", "meta"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "Given an array of points and integer k, return the k points closest to the origin (0,0). Distance is Euclidean; you can compare squared distances.",
+    beginnerExplanation:
+      "You never need the actual square root — comparing x*x + y*y is enough. Sort by squared distance (or keep a size-k max-heap) and return the first k.",
+    realWorldAnalogy:
+      "Picking the k nearest stars to Earth: you can rank by squared distance since the ordering is identical and avoids slow square roots.",
+    visualExplanation: "points=[[1,3],[-2,2]], k=1 -> dists 10 vs 8 -> closest [-2,2]",
+    approaches: [
+      {
+        title: "Sort by distance",
+        tier: "Better",
+        idea: "Sort all points by squared distance, take k.",
+        steps: ["Compute x*x+y*y", "Sort ascending", "Return first k"],
+        time: "O(n log n)",
+        space: "O(n)",
+      },
+      {
+        title: "Size-k max-heap",
+        tier: "Optimal",
+        idea: "Keep only the k closest using a max-heap keyed on distance.",
+        steps: ["Push each point", "If heap > k pop the farthest", "Return heap contents"],
+        time: "O(n log k)",
+        space: "O(k)",
+      },
+    ],
+    dryRun: "compare squared distances; smallest k win",
+    interviewTips: ["Skip the sqrt — squared distance preserves order.", "Heap wins when k << n."],
+    commonMistakes: ["Computing sqrt unnecessarily.", "Tie-handling assumptions."],
+    followUps: ["Streaming points.", "K farthest points."],
+    related: ["kth-largest-element-in-an-array"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def k_closest(points, k):
+    points.sort(key=lambda p: p[0] * p[0] + p[1] * p[1])
+    return points[:k]`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `import java.util.*;
+
+class Solution {
+    public int[][] kClosest(int[][] points, int k) {
+        Arrays.sort(points, (a, b) -> (a[0]*a[0] + a[1]*a[1]) - (b[0]*b[0] + b[1]*b[1]));
+        return Arrays.copyOfRange(points, 0, k);
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function kClosest(points, k) {
+  points.sort((a, b) => (a[0]*a[0] + a[1]*a[1]) - (b[0]*b[0] + b[1]*b[1]));
+  return points.slice(0, k);
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    // Simple selection by squared distance (clear; a heap gives O(n log k)).
+    public static List<List<Integer>> kClosest(List<List<Integer>> points, Integer k) {
+        List<List<Integer>> result = new List<List<Integer>>();
+        List<List<Integer>> pts = points.clone();
+        for (Integer c = 0; c < k; c++) {
+            Integer bestIdx = 0;
+            Long bestDist = null;
+            for (Integer i = 0; i < pts.size(); i++) {
+                Long d = (Long) pts[i][0] * pts[i][0] + (Long) pts[i][1] * pts[i][1];
+                if (bestDist == null || d < bestDist) { bestDist = d; bestIdx = i; }
+            }
+            result.add(pts.remove(bestIdx));
+        }
+        return result;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "insert-interval",
+    title: "Insert Interval",
+    difficulty: "Medium",
+    patterns: ["intervals"],
+    topics: ["Arrays", "Intervals"],
+    companies: ["google", "amazon", "linkedin"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "Given a list of non-overlapping intervals sorted by start, insert a new interval and merge if necessary, returning the result still sorted.",
+    beginnerExplanation:
+      "Walk the sorted intervals in three phases: copy everything that ends before the new one starts, merge everything that overlaps the new one (expanding its bounds), then copy the rest.",
+    realWorldAnalogy:
+      "Slotting a new meeting into a sorted calendar — earlier meetings stay, anything that clashes fuses into one longer block, later meetings shift after.",
+    visualExplanation:
+      "intervals=[[1,3],[6,9]], new=[2,5] -> overlaps [1,3] -> merge to [1,5] -> [[1,5],[6,9]]",
+    approaches: [
+      {
+        title: "Three-phase scan",
+        tier: "Optimal",
+        idea: "Before / overlapping / after the new interval.",
+        steps: [
+          "Add all intervals ending before newStart",
+          "While overlapping, expand new = [min start, max end]; add it once",
+          "Add all remaining intervals",
+        ],
+        time: "O(n)",
+        space: "O(n)",
+      },
+    ],
+    dryRun: "[[1,3],[6,9]] insert [2,5]: overlap with [1,3] -> [1,5]; then [6,9] -> [[1,5],[6,9]]",
+    interviewTips: ["Overlap test: a.start <= b.end AND b.start <= a.end.", "The input being pre-sorted is what makes it linear."],
+    commonMistakes: ["Wrong overlap condition (strict vs inclusive).", "Adding the merged interval multiple times."],
+    followUps: ["Merge Intervals (unsorted).", "Interval list intersections."],
+    related: ["merge-intervals", "non-overlapping-intervals"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def insert(intervals, new_interval):
+    res = []
+    i, n = 0, len(intervals)
+    while i < n and intervals[i][1] < new_interval[0]:
+        res.append(intervals[i]); i += 1
+    while i < n and intervals[i][0] <= new_interval[1]:
+        new_interval = [min(new_interval[0], intervals[i][0]), max(new_interval[1], intervals[i][1])]
+        i += 1
+    res.append(new_interval)
+    while i < n:
+        res.append(intervals[i]); i += 1
+    return res`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `import java.util.*;
+
+class Solution {
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        List<int[]> res = new ArrayList<>();
+        int i = 0, n = intervals.length;
+        while (i < n && intervals[i][1] < newInterval[0]) res.add(intervals[i++]);
+        while (i < n && intervals[i][0] <= newInterval[1]) {
+            newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
+            newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
+            i++;
+        }
+        res.add(newInterval);
+        while (i < n) res.add(intervals[i++]);
+        return res.toArray(new int[res.size()][]);
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function insert(intervals, newInterval) {
+  const res = [];
+  let i = 0;
+  const n = intervals.length;
+  while (i < n && intervals[i][1] < newInterval[0]) res.push(intervals[i++]);
+  while (i < n && intervals[i][0] <= newInterval[1]) {
+    newInterval = [Math.min(newInterval[0], intervals[i][0]), Math.max(newInterval[1], intervals[i][1])];
+    i++;
+  }
+  res.push(newInterval);
+  while (i < n) res.push(intervals[i++]);
+  return res;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static List<List<Integer>> insert(List<List<Integer>> intervals, List<Integer> newInterval) {
+        List<List<Integer>> res = new List<List<Integer>>();
+        Integer i = 0, n = intervals.size();
+        while (i < n && intervals[i][1] < newInterval[0]) { res.add(intervals[i]); i++; }
+        while (i < n && intervals[i][0] <= newInterval[1]) {
+            newInterval = new List<Integer>{
+                Math.min(newInterval[0], intervals[i][0]),
+                Math.max(newInterval[1], intervals[i][1])
+            };
+            i++;
+        }
+        res.add(newInterval);
+        while (i < n) { res.add(intervals[i]); i++; }
+        return res;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "non-overlapping-intervals",
+    title: "Non-overlapping Intervals",
+    difficulty: "Medium",
+    patterns: ["intervals", "greedy"],
+    topics: ["Arrays", "Intervals", "Greedy"],
+    companies: ["google", "amazon"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "Given intervals, return the minimum number you must remove so the rest are non-overlapping.",
+    beginnerExplanation:
+      "Greedy: sort by end time. Always keep the interval that ends earliest, because it leaves the most room for later ones. Whenever the next interval starts before your last kept end, it overlaps — remove it.",
+    realWorldAnalogy:
+      "Scheduling the most meetings in one room: always pick the meeting that frees the room soonest, and drop anything that clashes.",
+    visualExplanation:
+      "[[1,2],[2,3],[3,4],[1,3]] sort by end -> keep [1,2],[2,3],[3,4]; [1,3] overlaps -> remove 1",
+    approaches: [
+      {
+        title: "Greedy by end time",
+        tier: "Optimal",
+        idea: "Keep earliest-ending intervals; count overlaps removed.",
+        steps: [
+          "Sort by end",
+          "Track prevEnd; if start < prevEnd it overlaps -> removals++",
+          "Else update prevEnd",
+        ],
+        time: "O(n log n)",
+        space: "O(1)",
+      },
+    ],
+    dryRun: "sorted by end: [1,2],[2,3],[3,4],[1,3]; last overlaps with prevEnd 2 -> remove -> 1",
+    interviewTips: ["Sorting by END (not start) is the crux of the greedy proof.", "This is the classic activity-selection problem."],
+    commonMistakes: ["Sorting by start instead of end.", "Using strict vs inclusive overlap incorrectly (touching ends don't overlap)."],
+    followUps: ["Maximum number of non-overlapping intervals.", "Minimum arrows to burst balloons."],
+    related: ["merge-intervals", "insert-interval"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def erase_overlap_intervals(intervals):
+    intervals.sort(key=lambda x: x[1])
+    removals = 0
+    prev_end = float("-inf")
+    for start, end in intervals:
+        if start >= prev_end:
+            prev_end = end
+        else:
+            removals += 1
+    return removals`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `import java.util.*;
+
+class Solution {
+    public int eraseOverlapIntervals(int[][] intervals) {
+        Arrays.sort(intervals, (a, b) -> a[1] - b[1]);
+        int removals = 0, prevEnd = Integer.MIN_VALUE;
+        for (int[] it : intervals) {
+            if (it[0] >= prevEnd) prevEnd = it[1];
+            else removals++;
+        }
+        return removals;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function eraseOverlapIntervals(intervals) {
+  intervals.sort((a, b) => a[1] - b[1]);
+  let removals = 0, prevEnd = -Infinity;
+  for (const [start, end] of intervals) {
+    if (start >= prevEnd) prevEnd = end;
+    else removals++;
+  }
+  return removals;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Integer eraseOverlapIntervals(List<List<Integer>> intervals) {
+        // sort by end ascending
+        for (Integer i = 0; i < intervals.size(); i++) {
+            for (Integer j = 0; j < intervals.size() - 1 - i; j++) {
+                if (intervals[j][1] > intervals[j + 1][1]) {
+                    List<Integer> tmp = intervals[j];
+                    intervals[j] = intervals[j + 1];
+                    intervals[j + 1] = tmp;
+                }
+            }
+        }
+        Integer removals = 0, prevEnd = -2147483648;
+        for (List<Integer> it : intervals) {
+            if (it[0] >= prevEnd) prevEnd = it[1];
+            else removals++;
+        }
+        return removals;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "jump-game",
+    title: "Jump Game",
+    difficulty: "Medium",
+    patterns: ["greedy", "dynamic-programming"],
+    topics: ["Arrays", "Greedy"],
+    companies: ["amazon", "google"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "Each element of `nums` is your maximum jump length from that position. Starting at index 0, return true if you can reach the last index.",
+    beginnerExplanation:
+      "Track the furthest index you can currently reach. Walk left to right; if you ever stand on an index beyond your reach, you're stuck. Otherwise extend the reach by i + nums[i].",
+    realWorldAnalogy:
+      "Crossing a river on stepping stones where each stone tells you the max leap from it — you only care about the farthest stone still in range.",
+    visualExplanation: "[2,3,1,1,4] reach: 0->2->4 reaches end -> true\n[3,2,1,0,4] reach stalls at 3 < 4 -> false",
+    approaches: [
+      {
+        title: "DP reachability",
+        tier: "Better",
+        idea: "Work backwards marking which indices can reach the end.",
+        steps: ["dp[n-1]=true", "dp[i] true if any reachable j has dp[j]"],
+        time: "O(n^2)",
+        space: "O(n)",
+      },
+      {
+        title: "Greedy furthest reach",
+        tier: "Optimal",
+        idea: "One pass tracking the maximum reachable index.",
+        steps: [
+          "reach = 0",
+          "For each i: if i > reach return false; reach = max(reach, i + nums[i])",
+          "Return true",
+        ],
+        time: "O(n)",
+        space: "O(1)",
+      },
+    ],
+    dryRun: "[2,3,1,1,4]: i0 reach2; i1 reach4; reach>=4 -> true",
+    interviewTips: ["The greedy 'furthest reach' is cleaner than DP here.", "Early-exit the moment i exceeds reach."],
+    commonMistakes: ["Off-by-one comparing reach to n-1.", "Overcomplicating with DP when greedy suffices."],
+    followUps: ["Jump Game II (minimum jumps).", "Jump Game III (reach a zero)."],
+    related: ["maximum-subarray"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def can_jump(nums):
+    reach = 0
+    for i, n in enumerate(nums):
+        if i > reach:
+            return False
+        reach = max(reach, i + n)
+    return True`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public boolean canJump(int[] nums) {
+        int reach = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (i > reach) return false;
+            reach = Math.max(reach, i + nums[i]);
+        }
+        return true;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function canJump(nums) {
+  let reach = 0;
+  for (let i = 0; i < nums.length; i++) {
+    if (i > reach) return false;
+    reach = Math.max(reach, i + nums[i]);
+  }
+  return true;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Boolean canJump(List<Integer> nums) {
+        Integer reach = 0;
+        for (Integer i = 0; i < nums.size(); i++) {
+            if (i > reach) return false;
+            reach = Math.max(reach, i + nums[i]);
+        }
+        return true;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "subsets",
+    title: "Subsets",
+    difficulty: "Medium",
+    patterns: ["backtracking"],
+    topics: ["Backtracking", "Arrays"],
+    companies: ["amazon", "meta", "google"],
+    sheets: ["neetcode150"],
+    frequency: 4,
+    statement: "Given an array of distinct integers, return all possible subsets (the power set). The solution must not contain duplicate subsets.",
+    beginnerExplanation:
+      "For each element you make a binary choice: include it or not. Backtracking explores both branches: add the element, recurse, then remove it and recurse without it. Every leaf of that decision tree is one subset.",
+    realWorldAnalogy:
+      "Packing for a trip: for each item you either pack it or leave it. Every distinct combination of yes/no choices is a different packed bag.",
+    visualExplanation: "[1,2,3] -> [],[1],[1,2],[1,2,3],[1,3],[2],[2,3],[3] (8 = 2^3 subsets)",
+    approaches: [
+      {
+        title: "Backtracking (include / exclude)",
+        tier: "Optimal",
+        idea: "Build subsets incrementally; record a copy at each node.",
+        steps: [
+          "Recurse with a start index",
+          "Record the current path as a subset",
+          "For each i from start: choose nums[i], recurse(i+1), un-choose",
+        ],
+        time: "O(n * 2^n)",
+        space: "O(n) recursion",
+      },
+    ],
+    dryRun: "start at []; add 1 -> [1]; add 2 -> [1,2]; add 3 -> [1,2,3]; backtrack...",
+    interviewTips: ["Pass start index to avoid duplicate subsets.", "Copy the path when recording — don't store the mutable reference."],
+    commonMistakes: ["Storing the live list reference (all entries end up identical).", "Re-using earlier indices and generating duplicates."],
+    followUps: ["Subsets II with duplicates.", "Combinations (choose k)."],
+    related: ["combination-sum", "permutations"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def subsets(nums):
+    res = []
+    path = []
+    def backtrack(start):
+        res.append(path[:])
+        for i in range(start, len(nums)):
+            path.append(nums[i])
+            backtrack(i + 1)
+            path.pop()
+    backtrack(0)
+    return res`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `import java.util.*;
+
+class Solution {
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        backtrack(nums, 0, new ArrayList<>(), res);
+        return res;
+    }
+    private void backtrack(int[] nums, int start, List<Integer> path, List<List<Integer>> res) {
+        res.add(new ArrayList<>(path));
+        for (int i = start; i < nums.length; i++) {
+            path.add(nums[i]);
+            backtrack(nums, i + 1, path, res);
+            path.remove(path.size() - 1);
+        }
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function subsets(nums) {
+  const res = [];
+  const path = [];
+  function backtrack(start) {
+    res.push([...path]);
+    for (let i = start; i < nums.length; i++) {
+      path.push(nums[i]);
+      backtrack(i + 1);
+      path.pop();
+    }
+  }
+  backtrack(0);
+  return res;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static List<List<Integer>> subsets(List<Integer> nums) {
+        List<List<Integer>> res = new List<List<Integer>>();
+        backtrack(nums, 0, new List<Integer>(), res);
+        return res;
+    }
+    private static void backtrack(List<Integer> nums, Integer start, List<Integer> path, List<List<Integer>> res) {
+        res.add(path.clone());
+        for (Integer i = start; i < nums.size(); i++) {
+            path.add(nums[i]);
+            backtrack(nums, i + 1, path, res);
+            path.remove(path.size() - 1);
+        }
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "combination-sum",
+    title: "Combination Sum",
+    difficulty: "Medium",
+    patterns: ["backtracking"],
+    topics: ["Backtracking", "Arrays"],
+    companies: ["amazon", "meta"],
+    sheets: ["neetcode150"],
+    frequency: 4,
+    statement:
+      "Given distinct candidates and a target, return all unique combinations that sum to target. The same number may be used unlimited times.",
+    beginnerExplanation:
+      "Backtrack, but since numbers can repeat, when you choose candidate i you recurse still allowing index i again. To avoid duplicate combinations, never go back to earlier indices.",
+    realWorldAnalogy:
+      "Making exact change with unlimited coins of given denominations — you can reuse a coin, but to avoid counting the same combo twice you only ever add coins of the current or larger denomination.",
+    visualExplanation: "candidates=[2,3,6,7], target=7 -> [2,2,3] and [7]",
+    approaches: [
+      {
+        title: "Backtracking with reuse",
+        tier: "Optimal",
+        idea: "Recurse on the same index to allow reuse; prune when remaining < 0.",
+        steps: [
+          "Track remaining = target - chosen",
+          "For i from start: if candidates[i] <= remaining, choose it, recurse with same i",
+          "Record path when remaining == 0",
+        ],
+        time: "O(2^t) worst case",
+        space: "O(t) depth",
+      },
+    ],
+    dryRun: "target7: pick 2(rem5)->2(rem3)->3(rem0) [2,2,3]; backtrack; pick 7(rem0) [7]",
+    interviewTips: ["Recurse on i (not i+1) to allow reuse.", "Sort candidates to enable early pruning (break when candidate > remaining)."],
+    commonMistakes: ["Using i+1 (forbids reuse) by mistake.", "Generating permutations instead of combinations (going back to earlier indices)."],
+    followUps: ["Combination Sum II (each used once, with duplicates).", "Combination Sum III (k numbers)."],
+    related: ["subsets", "permutations"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def combination_sum(candidates, target):
+    res = []
+    path = []
+    def backtrack(start, remaining):
+        if remaining == 0:
+            res.append(path[:])
+            return
+        for i in range(start, len(candidates)):
+            if candidates[i] <= remaining:
+                path.append(candidates[i])
+                backtrack(i, remaining - candidates[i])
+                path.pop()
+    backtrack(0, target)
+    return res`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `import java.util.*;
+
+class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        backtrack(candidates, 0, target, new ArrayList<>(), res);
+        return res;
+    }
+    private void backtrack(int[] c, int start, int remaining, List<Integer> path, List<List<Integer>> res) {
+        if (remaining == 0) { res.add(new ArrayList<>(path)); return; }
+        for (int i = start; i < c.length; i++) {
+            if (c[i] <= remaining) {
+                path.add(c[i]);
+                backtrack(c, i, remaining - c[i], path, res);
+                path.remove(path.size() - 1);
+            }
+        }
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function combinationSum(candidates, target) {
+  const res = [];
+  const path = [];
+  function backtrack(start, remaining) {
+    if (remaining === 0) { res.push([...path]); return; }
+    for (let i = start; i < candidates.length; i++) {
+      if (candidates[i] <= remaining) {
+        path.push(candidates[i]);
+        backtrack(i, remaining - candidates[i]);
+        path.pop();
+      }
+    }
+  }
+  backtrack(0, target);
+  return res;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static List<List<Integer>> combinationSum(List<Integer> candidates, Integer target) {
+        List<List<Integer>> res = new List<List<Integer>>();
+        backtrack(candidates, 0, target, new List<Integer>(), res);
+        return res;
+    }
+    private static void backtrack(List<Integer> c, Integer start, Integer remaining, List<Integer> path, List<List<Integer>> res) {
+        if (remaining == 0) { res.add(path.clone()); return; }
+        for (Integer i = start; i < c.size(); i++) {
+            if (c[i] <= remaining) {
+                path.add(c[i]);
+                backtrack(c, i, remaining - c[i], path, res);
+                path.remove(path.size() - 1);
+            }
+        }
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "clone-graph",
+    title: "Clone Graph",
+    difficulty: "Medium",
+    patterns: ["graphs"],
+    topics: ["Graphs", "Hashing"],
+    companies: ["meta", "amazon", "google"],
+    sheets: ["neetcode150"],
+    frequency: 4,
+    statement:
+      "Given a reference to a node in a connected undirected graph, return a deep copy (clone) of the graph.",
+    beginnerExplanation:
+      "Traverse the graph (DFS or BFS) while keeping a map from each original node to its clone. When you visit a node, create its clone once, then wire up clones of its neighbors — using the map so you never duplicate a node.",
+    realWorldAnalogy:
+      "Photocopying a social network: you make one copy per person and reconnect the copies with the same friendships, checking a ledger so nobody gets copied twice.",
+    visualExplanation: "map[original] = clone; for each neighbor, clone.neighbors.append(map[neighbor])",
+    approaches: [
+      {
+        title: "DFS with a visited map",
+        tier: "Optimal",
+        idea: "Memoise original->clone to handle cycles and shared nodes.",
+        steps: [
+          "If node already cloned, return its clone",
+          "Create clone; store in map",
+          "Recurse on each neighbor, appending their clones",
+        ],
+        time: "O(V + E)",
+        space: "O(V)",
+      },
+    ],
+    dryRun: "clone node1; recurse neighbor2 (clone, then its neighbors include map[1]); cycles resolved via map",
+    interviewTips: ["The original->clone map is what prevents infinite loops on cycles.", "BFS works equally well."],
+    commonMistakes: ["Re-cloning already-seen nodes (infinite recursion).", "Forgetting the graph is undirected (edges both ways)."],
+    followUps: ["Clone a linked list with random pointers.", "Serialize/deserialize the graph."],
+    related: ["number-of-islands", "course-schedule"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def clone_graph(node):
+    if not node:
+        return None
+    clones = {}
+    def dfs(n):
+        if n in clones:
+            return clones[n]
+        copy = Node(n.val)
+        clones[n] = copy
+        for nei in n.neighbors:
+            copy.neighbors.append(dfs(nei))
+        return copy
+    return dfs(node)`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `import java.util.*;
+
+class Solution {
+    private Map<Node, Node> clones = new HashMap<>();
+    public Node cloneGraph(Node node) {
+        if (node == null) return null;
+        if (clones.containsKey(node)) return clones.get(node);
+        Node copy = new Node(node.val);
+        clones.put(node, copy);
+        for (Node nei : node.neighbors) copy.neighbors.add(cloneGraph(nei));
+        return copy;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function cloneGraph(node) {
+  const clones = new Map();
+  function dfs(n) {
+    if (!n) return null;
+    if (clones.has(n)) return clones.get(n);
+    const copy = new Node(n.val);
+    clones.set(n, copy);
+    for (const nei of n.neighbors) copy.neighbors.push(dfs(nei));
+    return copy;
+  }
+  return dfs(node);
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    private Map<Node, Node> clones = new Map<Node, Node>();
+    public Node cloneGraph(Node node) {
+        if (node == null) return null;
+        if (clones.containsKey(node)) return clones.get(node);
+        Node copy = new Node(node.val);
+        clones.put(node, copy);
+        for (Node nei : node.neighbors) copy.neighbors.add(cloneGraph(nei));
+        return copy;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "rotting-oranges",
+    title: "Rotting Oranges",
+    difficulty: "Medium",
+    patterns: ["graphs"],
+    topics: ["Graphs", "Arrays"],
+    companies: ["amazon", "google"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "In a grid, 0 = empty, 1 = fresh orange, 2 = rotten. Each minute, rotten oranges rot orthogonally adjacent fresh ones. Return the minutes until none are fresh, or -1 if impossible.",
+    beginnerExplanation:
+      "This is multi-source BFS. Start with ALL rotten oranges in the queue at once (minute 0), then spread level by level — each BFS level is one minute. If fresh oranges remain when the queue empties, return -1.",
+    realWorldAnalogy:
+      "A rumour spreading through a room from several initial gossips simultaneously — each round, everyone adjacent to someone 'in the know' learns it; count the rounds until everyone knows.",
+    visualExplanation: "queue all 2s; each BFS layer = 1 minute; rot neighbors, decrement fresh; answer = layers",
+    approaches: [
+      {
+        title: "Multi-source BFS",
+        tier: "Optimal",
+        idea: "Seed the queue with every rotten orange; expand layer by layer.",
+        steps: [
+          "Count fresh; enqueue all rotten cells",
+          "BFS by minute: rot fresh neighbors, decrement fresh count",
+          "Return minutes if fresh == 0 else -1",
+        ],
+        time: "O(rows * cols)",
+        space: "O(rows * cols)",
+      },
+    ],
+    dryRun: "seed rotten; spread one ring per minute until no fresh; if any fresh unreachable -> -1",
+    interviewTips: ["Seeding ALL sources at once is the trick — don't BFS from each separately.", "Track fresh count to detect the impossible case."],
+    commonMistakes: ["Starting BFS from a single source.", "Off-by-one counting the initial minute."],
+    followUps: ["Walls and Gates (distance to nearest gate).", "01 Matrix (nearest 0)."],
+    related: ["number-of-islands", "course-schedule"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `from collections import deque
+
+def oranges_rotting(grid):
+    rows, cols = len(grid), len(grid[0])
+    q = deque()
+    fresh = 0
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 2: q.append((r, c))
+            elif grid[r][c] == 1: fresh += 1
+    minutes = 0
+    dirs = [(1,0),(-1,0),(0,1),(0,-1)]
+    while q and fresh:
+        for _ in range(len(q)):
+            r, c = q.popleft()
+            for dr, dc in dirs:
+                nr, nc = r + dr, c + dc
+                if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == 1:
+                    grid[nr][nc] = 2
+                    fresh -= 1
+                    q.append((nr, nc))
+        minutes += 1
+    return minutes if fresh == 0 else -1`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `import java.util.*;
+
+class Solution {
+    public int orangesRotting(int[][] grid) {
+        int rows = grid.length, cols = grid[0].length, fresh = 0;
+        Queue<int[]> q = new LinkedList<>();
+        for (int r = 0; r < rows; r++)
+            for (int c = 0; c < cols; c++) {
+                if (grid[r][c] == 2) q.add(new int[]{r, c});
+                else if (grid[r][c] == 1) fresh++;
+            }
+        int minutes = 0;
+        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};
+        while (!q.isEmpty() && fresh > 0) {
+            int size = q.size();
+            for (int i = 0; i < size; i++) {
+                int[] cell = q.poll();
+                for (int[] d : dirs) {
+                    int nr = cell[0] + d[0], nc = cell[1] + d[1];
+                    if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] == 1) {
+                        grid[nr][nc] = 2; fresh--; q.add(new int[]{nr, nc});
+                    }
+                }
+            }
+            minutes++;
+        }
+        return fresh == 0 ? minutes : -1;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function orangesRotting(grid) {
+  const rows = grid.length, cols = grid[0].length;
+  let q = [], fresh = 0;
+  for (let r = 0; r < rows; r++)
+    for (let c = 0; c < cols; c++) {
+      if (grid[r][c] === 2) q.push([r, c]);
+      else if (grid[r][c] === 1) fresh++;
+    }
+  let minutes = 0;
+  const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+  while (q.length && fresh) {
+    const next = [];
+    for (const [r, c] of q) {
+      for (const [dr, dc] of dirs) {
+        const nr = r + dr, nc = c + dc;
+        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] === 1) {
+          grid[nr][nc] = 2; fresh--; next.push([nr, nc]);
+        }
+      }
+    }
+    q = next;
+    minutes++;
+  }
+  return fresh === 0 ? minutes : -1;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Integer orangesRotting(List<List<Integer>> grid) {
+        Integer rows = grid.size(), cols = grid[0].size(), fresh = 0;
+        List<List<Integer>> q = new List<List<Integer>>();
+        for (Integer r = 0; r < rows; r++)
+            for (Integer c = 0; c < cols; c++) {
+                if (grid[r][c] == 2) q.add(new List<Integer>{ r, c });
+                else if (grid[r][c] == 1) fresh++;
+            }
+        Integer minutes = 0;
+        List<List<Integer>> dirs = new List<List<Integer>>{
+            new List<Integer>{1,0}, new List<Integer>{-1,0},
+            new List<Integer>{0,1}, new List<Integer>{0,-1}
+        };
+        while (!q.isEmpty() && fresh > 0) {
+            List<List<Integer>> next = new List<List<Integer>>();
+            for (List<Integer> cell : q) {
+                for (List<Integer> d : dirs) {
+                    Integer nr = cell[0] + d[0], nc = cell[1] + d[1];
+                    if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] == 1) {
+                        grid[nr][nc] = 2; fresh--; next.add(new List<Integer>{ nr, nc });
+                    }
+                }
+            }
+            q = next;
+            minutes++;
+        }
+        return fresh == 0 ? minutes : -1;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "longest-increasing-subsequence",
+    title: "Longest Increasing Subsequence",
+    difficulty: "Medium",
+    patterns: ["dynamic-programming"],
+    topics: ["Dynamic Programming", "Arrays"],
+    companies: ["amazon", "microsoft", "google"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "Given an integer array `nums`, return the length of the longest strictly increasing subsequence (not necessarily contiguous).",
+    beginnerExplanation:
+      "Let dp[i] be the length of the longest increasing subsequence ending at index i. For each i, look back at every earlier j with nums[j] < nums[i] and take the best dp[j] + 1. The answer is the max over all dp[i].",
+    realWorldAnalogy:
+      "Building the longest chain of ever-taller people for a photo, where each person can stand on the best chain that ends with someone shorter.",
+    visualExplanation: "nums=[10,9,2,5,3,7,101,18] -> LIS [2,3,7,101] length 4",
+    approaches: [
+      {
+        title: "O(n^2) DP",
+        tier: "Better",
+        idea: "dp[i] = 1 + max(dp[j]) over j<i with nums[j]<nums[i].",
+        steps: ["Init dp all 1", "For each i, scan j<i and relax dp[i]", "Answer = max(dp)"],
+        time: "O(n^2)",
+        space: "O(n)",
+      },
+      {
+        title: "Patience sorting + binary search",
+        tier: "Optimal",
+        idea: "Maintain tails[] of smallest possible tail for each length; binary-search the insert point.",
+        steps: ["For each x, binary search its position in tails", "Replace or append", "Length of tails is the answer"],
+        time: "O(n log n)",
+        space: "O(n)",
+      },
+    ],
+    dryRun: "dp evolves; ending at 101 gives chain 2,3,7,101 -> 4",
+    interviewTips: ["Have the O(n log n) patience-sorting version ready as the follow-up.", "Strictly increasing means use < not <=."],
+    commonMistakes: ["Confusing subsequence with subarray.", "Using <= and allowing equal values."],
+    followUps: ["Number of LIS.", "Longest non-decreasing subsequence.", "Russian doll envelopes (2D LIS)."],
+    related: ["longest-common-subsequence"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def length_of_lis(nums):
+    if not nums:
+        return 0
+    dp = [1] * len(nums)
+    for i in range(len(nums)):
+        for j in range(i):
+            if nums[j] < nums[i]:
+                dp[i] = max(dp[i], dp[j] + 1)
+    return max(dp)`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public int lengthOfLIS(int[] nums) {
+        int n = nums.length, best = 0;
+        int[] dp = new int[n];
+        for (int i = 0; i < n; i++) {
+            dp[i] = 1;
+            for (int j = 0; j < i; j++)
+                if (nums[j] < nums[i]) dp[i] = Math.max(dp[i], dp[j] + 1);
+            best = Math.max(best, dp[i]);
+        }
+        return best;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function lengthOfLIS(nums) {
+  const n = nums.length;
+  const dp = new Array(n).fill(1);
+  let best = 0;
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < i; j++)
+      if (nums[j] < nums[i]) dp[i] = Math.max(dp[i], dp[j] + 1);
+    best = Math.max(best, dp[i]);
+  }
+  return best;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Integer lengthOfLIS(List<Integer> nums) {
+        Integer n = nums.size(), best = 0;
+        List<Integer> dp = new List<Integer>();
+        for (Integer i = 0; i < n; i++) {
+            dp.add(1);
+            for (Integer j = 0; j < i; j++)
+                if (nums[j] < nums[i]) dp[i] = Math.max(dp[i], dp[j] + 1);
+            best = Math.max(best, dp[i]);
+        }
+        return best;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "word-break",
+    title: "Word Break",
+    difficulty: "Medium",
+    patterns: ["dynamic-programming"],
+    topics: ["Dynamic Programming", "Strings", "Hashing"],
+    companies: ["amazon", "google", "meta"],
+    sheets: ["neetcode150"],
+    frequency: 4,
+    statement:
+      "Given a string `s` and a dictionary `wordDict`, return true if `s` can be segmented into a space-separated sequence of one or more dictionary words.",
+    beginnerExplanation:
+      "Let dp[i] mean 'the first i characters can be segmented'. dp[0] is true (empty). For each position i, if some earlier dp[j] is true AND s[j..i] is a dictionary word, then dp[i] is true too.",
+    realWorldAnalogy:
+      "Reading a sign with no spaces ('applepie') and checking if you can slice it cleanly into real words you know.",
+    visualExplanation:
+      's = "leetcode", dict = ["leet","code"]\ndp[4] true ("leet"); dp[8] true since dp[4] and "code" -> true',
+    approaches: [
+      {
+        title: "Recursion with memo",
+        tier: "Better",
+        idea: "Try every prefix that is a word, recurse on the rest, cache results.",
+        steps: ["For each cut, if prefix in dict and rest breakable -> true"],
+        time: "O(n^2)",
+        space: "O(n)",
+      },
+      {
+        title: "Bottom-up DP",
+        tier: "Optimal",
+        idea: "dp[i] true if some dp[j] true and s[j..i] is a word.",
+        steps: [
+          "dp[0] = true",
+          "For i in 1..n, for j in 0..i: if dp[j] and s[j:i] in dict -> dp[i]=true",
+          "Return dp[n]",
+        ],
+        time: "O(n^2) (times word check)",
+        space: "O(n)",
+      },
+    ],
+    dryRun: 'dp[0]=T; dp[4]=T (leet); dp[8]=T (code after dp[4]) -> True',
+    interviewTips: ["Put the dictionary in a set for O(1) membership.", "Bound the inner cut length by the longest word to speed it up."],
+    commonMistakes: ["Greedy matching (fails on overlaps like 'aaaaa').", "Forgetting dp[0] = true."],
+    followUps: ["Word Break II (return all sentences).", "Minimum number of words."],
+    related: ["coin-change"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def word_break(s, word_dict):
+    words = set(word_dict)
+    dp = [False] * (len(s) + 1)
+    dp[0] = True
+    for i in range(1, len(s) + 1):
+        for j in range(i):
+            if dp[j] and s[j:i] in words:
+                dp[i] = True
+                break
+    return dp[len(s)]`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `import java.util.*;
+
+class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Set<String> words = new HashSet<>(wordDict);
+        boolean[] dp = new boolean[s.length() + 1];
+        dp[0] = true;
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && words.contains(s.substring(j, i))) { dp[i] = true; break; }
+            }
+        }
+        return dp[s.length()];
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function wordBreak(s, wordDict) {
+  const words = new Set(wordDict);
+  const dp = new Array(s.length + 1).fill(false);
+  dp[0] = true;
+  for (let i = 1; i <= s.length; i++) {
+    for (let j = 0; j < i; j++) {
+      if (dp[j] && words.has(s.slice(j, i))) { dp[i] = true; break; }
+    }
+  }
+  return dp[s.length];
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Boolean wordBreak(String s, List<String> wordDict) {
+        Set<String> words = new Set<String>(wordDict);
+        List<Boolean> dp = new List<Boolean>();
+        for (Integer i = 0; i <= s.length(); i++) dp.add(false);
+        dp[0] = true;
+        for (Integer i = 1; i <= s.length(); i++) {
+            for (Integer j = 0; j < i; j++) {
+                if (dp[j] && words.contains(s.substring(j, i))) { dp[i] = true; break; }
+            }
+        }
+        return dp[s.length()];
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "unique-paths",
+    title: "Unique Paths",
+    difficulty: "Medium",
+    patterns: ["dynamic-programming"],
+    topics: ["Dynamic Programming"],
+    companies: ["amazon", "google"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "A robot at the top-left of an m x n grid can only move right or down. How many unique paths reach the bottom-right corner?",
+    beginnerExplanation:
+      "The number of ways to reach a cell equals the ways to reach the cell above plus the cell to the left (the only two moves). Fill a grid (or a single rolling row) of these counts; the bottom-right holds the answer.",
+    realWorldAnalogy:
+      "Counting routes through a city grid where you may only walk east or south — each intersection's route count is the sum of the intersection north of it and the one west of it.",
+    visualExplanation: "3x3 counts:\n1 1 1\n1 2 3\n1 3 6 -> answer 6",
+    approaches: [
+      {
+        title: "2D DP",
+        tier: "Better",
+        idea: "grid[i][j] = grid[i-1][j] + grid[i][j-1].",
+        steps: ["First row/col = 1", "Fill by summing top + left"],
+        time: "O(m*n)",
+        space: "O(m*n)",
+      },
+      {
+        title: "Rolling 1D row",
+        tier: "Optimal",
+        idea: "Only the previous row is needed; update a single row in place.",
+        steps: ["row = [1]*n", "For each subsequent row: row[j] += row[j-1]", "Return row[n-1]"],
+        time: "O(m*n)",
+        space: "O(n)",
+      },
+    ],
+    dryRun: "row=[1,1,1] -> [1,2,3] -> [1,3,6] -> 6",
+    interviewTips: ["Mention the closed-form C(m+n-2, m-1) for a slick O(min(m,n)) answer.", "The 1D rolling array shows space optimisation awareness."],
+    commonMistakes: ["Initialising the first row/column wrong.", "Index confusion between m (rows) and n (cols)."],
+    followUps: ["Unique Paths II with obstacles.", "Minimum path sum."],
+    related: ["climbing-stairs", "coin-change"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def unique_paths(m, n):
+    row = [1] * n
+    for _ in range(1, m):
+        for j in range(1, n):
+            row[j] += row[j - 1]
+    return row[n - 1]`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public int uniquePaths(int m, int n) {
+        int[] row = new int[n];
+        java.util.Arrays.fill(row, 1);
+        for (int i = 1; i < m; i++)
+            for (int j = 1; j < n; j++)
+                row[j] += row[j - 1];
+        return row[n - 1];
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function uniquePaths(m, n) {
+  const row = new Array(n).fill(1);
+  for (let i = 1; i < m; i++)
+    for (let j = 1; j < n; j++)
+      row[j] += row[j - 1];
+  return row[n - 1];
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Integer uniquePaths(Integer m, Integer n) {
+        List<Integer> row = new List<Integer>();
+        for (Integer j = 0; j < n; j++) row.add(1);
+        for (Integer i = 1; i < m; i++)
+            for (Integer j = 1; j < n; j++)
+                row[j] = row[j] + row[j - 1];
+        return row[n - 1];
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "single-number",
+    title: "Single Number",
+    difficulty: "Easy",
+    patterns: ["bit-manipulation"],
+    topics: ["Bit Manipulation", "Arrays"],
+    companies: ["amazon", "apple"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "Every element appears twice except for one. Find that single one using O(n) time and O(1) extra space.",
+    beginnerExplanation:
+      "XOR is the magic here: x ^ x = 0 and x ^ 0 = x. XOR-ing every number together cancels all the pairs, leaving exactly the lonely number.",
+    realWorldAnalogy:
+      "Pairs of dancers leaving the floor cancel out; whoever is left standing when all matched pairs have gone is the single one.",
+    visualExplanation: "[4,1,2,1,2] -> 4^1^2^1^2 = 4^(1^1)^(2^2) = 4^0^0 = 4",
+    approaches: [
+      {
+        title: "Hash set / count",
+        tier: "Brute Force",
+        idea: "Tally occurrences and return the one with count 1.",
+        steps: ["Count each value", "Return the value seen once"],
+        time: "O(n)",
+        space: "O(n)",
+      },
+      {
+        title: "XOR accumulation",
+        tier: "Optimal",
+        idea: "XOR cancels duplicate pairs, leaving the unique value.",
+        steps: ["result = 0", "result ^= each number", "Return result"],
+        time: "O(n)",
+        space: "O(1)",
+      },
+    ],
+    dryRun: "0^4=4; 4^1=5; 5^2=7; 7^1=6; 6^2=4 -> 4",
+    interviewTips: ["State the two XOR identities explicitly — that's the insight they want.", "Order doesn't matter since XOR is commutative."],
+    commonMistakes: ["Reaching for a hash map and missing the O(1)-space ask.", "Forgetting to initialise the accumulator to 0."],
+    followUps: ["Single Number II (every other appears 3x).", "Two single numbers (Single Number III)."],
+    related: ["missing-number", "number-of-1-bits"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def single_number(nums):
+    result = 0
+    for n in nums:
+        result ^= n
+    return result`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public int singleNumber(int[] nums) {
+        int result = 0;
+        for (int n : nums) result ^= n;
+        return result;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function singleNumber(nums) {
+  let result = 0;
+  for (const n of nums) result ^= n;
+  return result;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Integer singleNumber(List<Integer> nums) {
+        Integer result = 0;
+        for (Integer n : nums) result ^= n;
+        return result;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "number-of-1-bits",
+    title: "Number of 1 Bits",
+    difficulty: "Easy",
+    patterns: ["bit-manipulation"],
+    topics: ["Bit Manipulation"],
+    companies: ["apple", "microsoft"],
+    sheets: ["neetcode150"],
+    frequency: 2,
+    statement: "Return the number of set bits (1s) in the binary representation of an integer (the Hamming weight).",
+    beginnerExplanation:
+      "The slick trick is n & (n-1): it flips off the lowest set bit. Repeat until n is zero, counting how many times you did it — that's the number of 1 bits.",
+    realWorldAnalogy:
+      "Turning off the rightmost lit bulb on a string of lights one at a time and counting how many flicks it takes until they're all dark.",
+    visualExplanation: "n=11 (1011): 1011 -> 1010 -> 1000 -> 0000, three flips -> 3 set bits",
+    approaches: [
+      {
+        title: "Check each bit",
+        tier: "Better",
+        idea: "Shift and test the lowest bit 32 times.",
+        steps: ["count += n & 1; n >>= 1, repeat"],
+        time: "O(32)",
+        space: "O(1)",
+      },
+      {
+        title: "Brian Kernighan (n & (n-1))",
+        tier: "Optimal",
+        idea: "Each step clears the lowest set bit, so it loops only once per 1-bit.",
+        steps: ["While n != 0: n &= (n-1); count++", "Return count"],
+        time: "O(number of set bits)",
+        space: "O(1)",
+      },
+    ],
+    dryRun: "n=1011: clear -> 1010 (1); ->1000 (2); ->0 (3) => 3",
+    interviewTips: ["n & (n-1) clearing the lowest set bit is a reusable bit-trick.", "Watch for unsigned vs signed shifts in some languages."],
+    commonMistakes: ["Infinite loop from signed right shift on negatives.", "Off-by-one in bit counting."],
+    followUps: ["Counting Bits for 0..n.", "Reverse bits."],
+    related: ["single-number", "missing-number"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def hamming_weight(n):
+    count = 0
+    while n:
+        n &= n - 1
+        count += 1
+    return count`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public int hammingWeight(int n) {
+        int count = 0;
+        while (n != 0) {
+            n &= (n - 1);
+            count++;
+        }
+        return count;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function hammingWeight(n) {
+  let count = 0;
+  while (n !== 0) {
+    n &= n - 1;
+    count++;
+  }
+  return count;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Integer hammingWeight(Integer n) {
+        Integer count = 0;
+        while (n != 0) {
+            n &= (n - 1);
+            count++;
+        }
+        return count;
+    }
+}`,
+      },
+    ],
+  },
+  {
+    slug: "missing-number",
+    title: "Missing Number",
+    difficulty: "Easy",
+    patterns: ["bit-manipulation"],
+    topics: ["Bit Manipulation", "Math", "Arrays"],
+    companies: ["amazon", "microsoft"],
+    sheets: ["neetcode150"],
+    frequency: 3,
+    statement:
+      "Given an array of n distinct numbers taken from the range [0, n], return the one number that is missing.",
+    beginnerExplanation:
+      "Two clean tricks: (1) the sum 0+1+...+n is n*(n+1)/2, so subtract the actual array sum. (2) XOR all indices 0..n with all values; pairs cancel and the missing number survives.",
+    realWorldAnalogy:
+      "A roll call from 0 to n where exactly one student is absent — compare who should be there to who answered, and the gap is the absentee.",
+    visualExplanation: "nums=[3,0,1], n=3 -> expected sum 6, actual 4 -> missing 2",
+    approaches: [
+      {
+        title: "Gauss sum",
+        tier: "Optimal",
+        idea: "Expected total minus actual total is the missing value.",
+        steps: ["expected = n*(n+1)/2", "Return expected - sum(nums)"],
+        time: "O(n)",
+        space: "O(1)",
+      },
+      {
+        title: "XOR indices and values",
+        tier: "Optimal",
+        idea: "XOR 0..n and all values; duplicates cancel, the missing one remains.",
+        steps: ["res = n", "res ^= i ^ nums[i] for each i", "Return res"],
+        time: "O(n)",
+        space: "O(1)",
+      },
+    ],
+    dryRun: "[3,0,1]: expected 6, actual 4 -> 2; or XOR approach yields 2",
+    interviewTips: ["Mention the sum approach can overflow for huge n — XOR avoids it.", "Both are O(n) time, O(1) space."],
+    commonMistakes: ["Integer overflow in the sum for large n.", "Off-by-one in the expected-sum formula."],
+    followUps: ["Find all numbers disappeared in an array.", "Find the duplicate number."],
+    related: ["single-number", "number-of-1-bits"],
+    solutions: [
+      {
+        kind: "Interview",
+        language: "Python",
+        code: `def missing_number(nums):
+    n = len(nums)
+    return n * (n + 1) // 2 - sum(nums)`,
+      },
+      {
+        kind: "Interview",
+        language: "Java",
+        code: `class Solution {
+    public int missingNumber(int[] nums) {
+        int n = nums.length;
+        int expected = n * (n + 1) / 2;
+        int actual = 0;
+        for (int x : nums) actual += x;
+        return expected - actual;
+    }
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "JavaScript",
+        code: `function missingNumber(nums) {
+  const n = nums.length;
+  let actual = 0;
+  for (const x of nums) actual += x;
+  return (n * (n + 1)) / 2 - actual;
+}`,
+      },
+      {
+        kind: "Interview",
+        language: "Apex",
+        code: `public class Solution {
+    public static Integer missingNumber(List<Integer> nums) {
+        Integer n = nums.size();
+        Integer expected = n * (n + 1) / 2;
+        Integer actual = 0;
+        for (Integer x : nums) actual += x;
+        return expected - actual;
+    }
+}`,
+      },
+    ],
+  },
+];
+
+// Full library = curated base + topic batches (see problems-batch-*.ts).
+export const PROBLEMS: Problem[] = [
+  ...BASE_PROBLEMS,
+  ...PROBLEMS_BATCH_A,
+  ...PROBLEMS_BATCH_B,
+  ...PROBLEMS_BATCH_C,
+  ...PROBLEMS_BATCH_D,
 ];
 
 export const PROBLEM_MAP: Record<string, Problem> = Object.fromEntries(

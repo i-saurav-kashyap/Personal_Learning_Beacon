@@ -1,4 +1,5 @@
 import type { Pattern } from "@/lib/types";
+import { PROBLEMS } from "@/lib/data/problems";
 
 // ---------------------------------------------------------------------------
 // Pattern taxonomy. Patterns are the heart of the platform: we teach users to
@@ -511,7 +512,83 @@ for x in stream:
       },
     ],
   },
+  {
+    slug: "greedy",
+    name: "Greedy",
+    group: "Advanced",
+    icon: "🪙",
+    tagline: "Take the locally best choice — and prove it stays best.",
+    explanation:
+      "A greedy algorithm builds a solution by always making the choice that looks best right now, never reconsidering. It only works when a local optimum provably leads to a global optimum (the 'greedy choice property'). When it applies, it's simpler and faster than DP — but you must justify why greed is safe.",
+    analogy:
+      "Giving change with the fewest coins: you keep grabbing the largest coin that still fits. For standard currencies that greedy instinct is provably optimal.",
+    recognition: [
+      "You can sort by some key (end time, ratio, deadline) and sweep once.",
+      "'Minimum number of...' or 'maximum number of non-overlapping...'.",
+      "An exchange argument shows swapping toward the greedy choice never hurts.",
+    ],
+    traps: [
+      "Greedy is wrong when a locally worse choice enables a better future (then you need DP).",
+      "Choosing the wrong sort key (e.g. sorting intervals by start instead of end).",
+      "Skipping the correctness argument — interviewers ask 'why is greedy safe here?'.",
+    ],
+    template: {
+      language: "Python",
+      code: `items.sort(key=chooser)
+for it in items:
+    if feasible(it):
+        take(it)`,
+    },
+    questions: [],
+  },
+  {
+    slug: "bit-manipulation",
+    name: "Bit Manipulation",
+    group: "Advanced",
+    icon: "🔢",
+    tagline: "Treat numbers as bit vectors for O(1) tricks.",
+    explanation:
+      "Many problems collapse to elegant constant-space solutions using bitwise operators: XOR to cancel pairs, AND with (n-1) to strip the lowest set bit, shifts to test or set individual bits, and masks to track subsets. Recognising the bit structure turns a loop-and-count into a one-liner.",
+    analogy:
+      "A row of light switches: each bit is a switch you can flip, test, or combine — and XOR is the switch that toggles only where exactly one input is on.",
+    recognition: [
+      "'Every element appears twice except one' (XOR cancels pairs).",
+      "Counting set bits, powers of two, or subset enumeration.",
+      "Constraints hint at O(1) space or a fixed small alphabet (use a bitmask).",
+    ],
+    traps: [
+      "Signed vs unsigned right shift on negative numbers.",
+      "Operator precedence — bitwise ops bind loosely; parenthesise.",
+      "Overflow when shifting near the integer width.",
+    ],
+    template: {
+      language: "Python",
+      code: `x ^ x == 0        # pair cancels
+n & (n - 1)       # clears lowest set bit
+n & 1             # test lowest bit
+n >> 1            # drop lowest bit`,
+    },
+    questions: [],
+  },
 ];
+
+// ---------------------------------------------------------------------------
+// Auto-wire every problem into the patterns it trains, so each pattern page
+// lists its practice problems without hand-maintaining duplicate lists. The
+// dedup guard preserves any questions authored inline above.
+// ---------------------------------------------------------------------------
+for (const problem of PROBLEMS) {
+  for (const patternSlug of problem.patterns) {
+    const pattern = PATTERNS.find((p) => p.slug === patternSlug);
+    if (pattern && !pattern.questions.some((q) => q.slug === problem.slug)) {
+      pattern.questions.push({
+        slug: problem.slug,
+        title: problem.title,
+        difficulty: problem.difficulty,
+      });
+    }
+  }
+}
 
 export const PATTERN_MAP: Record<string, Pattern> = Object.fromEntries(
   PATTERNS.map((p) => [p.slug, p]),
