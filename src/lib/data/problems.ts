@@ -3,6 +3,9 @@ import { PROBLEMS_BATCH_A } from "@/lib/data/problems-batch-a";
 import { PROBLEMS_BATCH_B } from "@/lib/data/problems-batch-b";
 import { PROBLEMS_BATCH_C } from "@/lib/data/problems-batch-c";
 import { PROBLEMS_BATCH_D } from "@/lib/data/problems-batch-d";
+import { PROBLEMS_BATCH_E } from "@/lib/data/problems-batch-e";
+import { PROBLEMS_BATCH_F } from "@/lib/data/problems-batch-f";
+import { PROBLEMS_BATCH_G } from "@/lib/data/problems-batch-g";
 
 // ---------------------------------------------------------------------------
 // Seed question library. Each entry follows the full teaching template:
@@ -7026,6 +7029,9 @@ export const PROBLEMS: Problem[] = [
   ...PROBLEMS_BATCH_B,
   ...PROBLEMS_BATCH_C,
   ...PROBLEMS_BATCH_D,
+  ...PROBLEMS_BATCH_E,
+  ...PROBLEMS_BATCH_F,
+  ...PROBLEMS_BATCH_G,
 ];
 
 export const PROBLEM_MAP: Record<string, Problem> = Object.fromEntries(
