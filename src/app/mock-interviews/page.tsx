@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Card, SectionHeading, Badge, Button } from "@/components/ui/primitives";
+import { MockInterview } from "@/components/mock/MockInterview";
 
 export const metadata: Metadata = { title: "Mock Interviews" };
 
@@ -21,12 +22,19 @@ export default function MockInterviewsPage() {
         subtitle="A realistic simulator: timed rounds, a coding editor, an AI interviewer that probes your thinking, and a structured feedback report."
       />
       <div className="mb-6 flex items-center gap-3">
-        <Badge className="border-medium/30 bg-medium/10 text-medium">Preview</Badge>
+        <Badge className="border-easy/30 bg-easy/10 text-easy">Live</Badge>
         <span className="text-sm text-muted">
-          The engine and editor land in the next milestone. Here's the experience you'll get.
+          Runs on the latest Claude models. Set <code>ANTHROPIC_API_KEY</code> for a fully adaptive
+          interviewer + AI-graded report; without it a scripted demo interviewer runs.
         </span>
       </div>
 
+      {/* Live engine */}
+      <div className="mb-10">
+        <MockInterview />
+      </div>
+
+      <h2 className="mb-4 text-xl font-bold tracking-tight">What's inside</h2>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {FEATURES.map((f) => (
           <Card key={f.title}>
