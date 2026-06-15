@@ -41,11 +41,25 @@ The production target (NestJS + PostgreSQL + Redis + S3 + OAuth + AI) is specifi
 
 ## Run it
 
+This project uses **pnpm** (pinned via the `packageManager` field). Install pnpm with
+`brew install pnpm` or `corepack enable` (Node ≥ 20), then:
+
 ```bash
-npm install
-npm run dev      # http://localhost:3000
-npm run build    # production build (all routes prerender)
+pnpm install     # respects the supply-chain policy below
+pnpm dev         # http://localhost:3000
+pnpm build       # production build (all routes prerender)
 ```
+
+### Supply-chain hardening
+- **pnpm** with a strict, integrity-checked store; dependency build scripts are
+  **blocked by default** — only packages allow-listed in `pnpm-workspace.yaml`
+  (`allowBuilds`) may run them (currently just `sharp`).
+- **Publish cooldown** (`minimumReleaseAge: 1440`) refuses any version published in
+  the last 24h, dodging freshly-compromised releases.
+- **CI** (`.github/workflows/ci.yml`) installs with `--frozen-lockfile`, runs
+  `pnpm audit` (fails on high/critical), typechecks, and builds.
+- **Dependabot** (`.github/dependabot.yml`) keeps deps and Actions patched weekly.
+- The AI Tutor key lives only in `.env.local` (gitignored); never shipped to the client.
 
 ## Project layout
 

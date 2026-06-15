@@ -1,0 +1,18 @@
+# pnpm 11 reads its settings from here (the old package.json "pnpm" field and
+# several .npmrc keys are no longer honoured).
+
+# --- Supply-chain guardrails ----------------------------------------------
+# Refuse package versions published within the last 1440 minutes (24h) so a
+# freshly-compromised release can't be pulled in.
+minimumReleaseAge: 1440
+
+# Dependency lifecycle (install/postinstall) scripts are blocked by default.
+# Allow only vetted packages to run them; everything else stays inert.
+allowBuilds:
+  sharp: true # Next.js production image optimization (prebuilt native binary)
+  unrs-resolver: false # eslint import resolver only; binary ships prebuilt
+
+# --- Reproducibility / hygiene --------------------------------------------
+verifyDepsBeforeRun: warn
+autoInstallPeers: true
+strictPeerDependencies: false
