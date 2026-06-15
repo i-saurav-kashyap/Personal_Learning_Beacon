@@ -197,9 +197,10 @@ export function SortingVisualizer() {
   }
 
   const colorFor = (i: number) => {
+    // ring + scale make the active comparison/swap unmistakable while playing.
+    if (frame.swap.includes(i)) return "bg-hard ring-2 ring-hard scale-y-105";
+    if (frame.compare.includes(i)) return "bg-medium ring-2 ring-medium scale-y-105";
     if (frame.sorted.includes(i)) return "bg-easy";
-    if (frame.swap.includes(i)) return "bg-hard";
-    if (frame.compare.includes(i)) return "bg-medium";
     return "bg-brand";
   };
 

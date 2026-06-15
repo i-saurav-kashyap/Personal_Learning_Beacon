@@ -50,7 +50,17 @@ export function MockInterview() {
 
   const [turns, setTurns] = useState<Turn[]>([]);
   const [input, setInput] = useState("");
-  const [code, setCode] = useState(starterFor("Python"));
+  // One buffer per language so switching languages swaps the editor contents
+  // (and preserves what you've written in each).
+  const freshBuffers = (): Record<Language, string> => ({
+    Python: starterFor("Python"),
+    JavaScript: starterFor("JavaScript"),
+    Java: starterFor("Java"),
+    Apex: starterFor("Apex"),
+  });
+  const [codeByLang, setCodeByLang] = useState<Record<Language, string>>(freshBuffers);
+  const code = codeByLang[language];
+  const setCode = (v: string) => setCodeByLang((m) => ({ ...m, [language]: v }));
   const [streaming, setStreaming] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const startRef = useRef(0);
@@ -119,7 +129,7 @@ export function MockInterview() {
     setPhase("live");
     startRef.current = Date.now();
     setElapsed(0);
-    setCode(starterFor(language));
+    setCodeByLang(freshBuffers());
     setTurns([]);
     setReport(null);
     void streamChat("start", []);

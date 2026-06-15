@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { getCourseStep } from "@/lib/data/course";
 import { librarySlugForTitle } from "@/lib/courseMatch";
 import { useProgress } from "@/lib/store";
-import { Card, ProgressBar, DifficultyBadge, Badge } from "@/components/ui/primitives";
+import { Card, ProgressBar, DifficultyBadge } from "@/components/ui/primitives";
 import { cn } from "@/lib/cn";
 
 export function CourseStepView({ stepId }: { stepId: number }) {
@@ -80,12 +80,19 @@ export function CourseStepView({ stepId }: { stepId: number }) {
                     {lib ? (
                       <Link
                         href={`/problems/${lib}`}
-                        className="rounded-lg border border-border px-2 py-0.5 text-xs font-medium text-brand hover:bg-surface-2"
+                        className="rounded-lg border border-brand/40 bg-brand/10 px-2 py-0.5 text-xs font-medium text-brand hover:bg-brand/20"
                       >
                         Study →
                       </Link>
                     ) : (
-                      <Badge className="opacity-60">notes soon</Badge>
+                      <a
+                        href={`https://leetcode.com/problemset/?search=${encodeURIComponent(p.title)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-lg border border-border px-2 py-0.5 text-xs font-medium text-muted hover:bg-surface-2 hover:text-fg"
+                      >
+                        LeetCode ↗
+                      </a>
                     )}
                     <DifficultyBadge difficulty={p.difficulty} />
                   </div>
