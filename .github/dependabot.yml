@@ -1,24 +1,28 @@
 version: 2
 updates:
   # Application dependencies (Dependabot reads the pnpm lockfile under "npm").
+  # Everything is rolled into ONE grouped PR (incl. majors) to keep noise low.
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 1
     groups:
-      # Batch low-risk updates into single PRs to reduce noise.
-      minor-and-patch:
-        update-types:
-          - "minor"
-          - "patch"
+      all-npm:
+        patterns:
+          - "*"
     labels:
       - "dependencies"
 
-  # Keep GitHub Actions pinned and current.
+  # GitHub Actions, also collapsed into a single grouped PR.
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 1
+    groups:
+      all-actions:
+        patterns:
+          - "*"
     labels:
       - "ci"
