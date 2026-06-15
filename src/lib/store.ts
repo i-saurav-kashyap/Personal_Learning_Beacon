@@ -21,11 +21,14 @@ interface ProgressState {
   bookmarks: string[];
   notes: Record<string, string>;
   reviews: Record<string, ReviewItem>;
+  /** lightweight check-off for course/sheet items (no spaced-repetition) */
+  tracked: Record<string, number>;
   streak: number;
   lastActiveDay: string | null; // YYYY-MM-DD
 
   setProfile: (p: OnboardingProfile) => void;
   toggleSolved: (slug: string) => void;
+  toggleTracked: (slug: string) => void;
   toggleBookmark: (slug: string) => void;
   setNote: (slug: string, text: string) => void;
   /** advance a review item to its next stage after a successful recall */
@@ -47,10 +50,19 @@ export const useProgress = create<ProgressState>()(
       bookmarks: [],
       notes: {},
       reviews: {},
+      tracked: {},
       streak: 0,
       lastActiveDay: null,
 
       setProfile: (p) => set({ profile: p }),
+
+      toggleTracked: (slug) =>
+        set((s) => {
+          const tracked = { ...s.tracked };
+          if (tracked[slug]) delete tracked[slug];
+          else tracked[slug] = Date.now();
+          return { tracked };
+        }),
 
       toggleSolved: (slug) =>
         set((s) => {
@@ -120,6 +132,7 @@ export const useProgress = create<ProgressState>()(
           bookmarks: [],
           notes: {},
           reviews: {},
+          tracked: {},
           streak: 0,
           lastActiveDay: null,
         }),
