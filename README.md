@@ -1,1 +1,72 @@
-# Personal_Learning_Beacon
+# Beacon — Personal Learning Beacon
+
+A pattern-driven, interview-focused DSA learning platform. Built to take a learner
+from "never solved a problem" to "FAANG-ready" — by teaching **pattern recognition**,
+**optimisation**, and **how to explain solutions in an interview**, not just topics.
+
+> This repository is the **working app foundation** (pass 1). It is a real, runnable
+> Next.js application with a polished design system and a deep Patterns + Question
+> Library showpiece. The full product vision and the remaining build phases are in
+> [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+
+## What's built and working
+
+| Area | Status |
+| --- | --- |
+| Design system (dark/light, a11y, responsive, glass nav) | ✅ |
+| Personalized onboarding → roadmap (level / company / time / language) | ✅ |
+| **Patterns** (15) — explanation, analogy, recognition guide, traps, template, problems | ✅ |
+| **Question Library** (25) — brute→better→optimal, dry run, complexity, tips, mistakes, follow-ups, Java/Python/JS/Apex | ✅ |
+| Curated sheets (Blind 75, NeetCode 150, Namaste, Striver, Top 50) with progress | ✅ |
+| Company-wise prep (topic/pattern/difficulty distributions) | ✅ |
+| Roadmaps (14/30/60/90 day) with progress tracking | ✅ |
+| Visualizers — Sorting (5 algos), Binary Search, Tree Traversal, Graph BFS/DFS (play/pause/step/speed) | ✅ |
+| Dashboard (progress, streak, weak/strong topics, revision schedule) | ✅ |
+| Spaced-repetition Revision Hub (1·3·7·15·30 day) | ✅ |
+| **AI Tutor** — streaming Claude chat via `/api/tutor` (set `ANTHROPIC_API_KEY`; graceful fallback without it) | ✅ |
+| Mock Interview — designed preview | ◻️ preview |
+
+State persists locally (Zustand + `localStorage`) — no backend required for this pass.
+
+## Tech stack (this pass)
+
+- **Next.js (App Router) + React 19 + TypeScript**
+- **TailwindCSS** with a CSS-variable theming system + `@tailwindcss/typography`
+- **Framer Motion** for onboarding transitions
+- **Zustand** (persisted) for progress, bookmarks, notes, streak, spaced repetition
+- **next-themes** for dark/light
+
+The production target (NestJS + PostgreSQL + Redis + S3 + OAuth + AI) is specified in
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+
+## Run it
+
+```bash
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # production build (all routes prerender)
+```
+
+## Project layout
+
+```
+src/
+  app/                 # App Router pages (home, patterns, problems, sheets, …)
+  components/
+    layout/            # Navbar, Footer
+    ui/                # primitives (Card, Badge, Button, ProgressBar …)
+    onboarding/        # OnboardingFlow
+    problems/          # ProblemList, CodeTabs, ProblemActions, NotesEditor
+    visualizers/       # SortingVisualizer
+  lib/
+    types.ts           # domain model (mirrors future DB schema)
+    store.ts           # Zustand progress + spaced-repetition store
+    data/              # typed seed content: patterns, problems, companies, roadmaps
+docs/
+  ARCHITECTURE.md      # PRD, system + data architecture, APIs, taxonomies, roadmap
+```
+
+## Content integrity
+
+Company sections reflect **publicly reported community interview experiences and
+trends**. We never claim a problem was officially asked by any company.
