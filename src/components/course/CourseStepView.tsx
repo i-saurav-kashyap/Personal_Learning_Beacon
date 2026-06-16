@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getCourseStep } from "@/lib/data/course";
 import { librarySlugForTitle } from "@/lib/courseMatch";
+import { conceptSlugForTitle } from "@/lib/data/concepts";
 import { useProgress } from "@/lib/store";
 import { Card, ProgressBar, DifficultyBadge } from "@/components/ui/primitives";
 import { cn } from "@/lib/cn";
@@ -53,6 +54,7 @@ export function CourseStepView({ stepId }: { stepId: number }) {
             <div className="overflow-hidden rounded-2xl border border-border">
               {section.problems.map((p, i) => {
                 const lib = librarySlugForTitle(p.title);
+                const concept = lib ? undefined : conceptSlugForTitle(p.title);
                 const isDone = mounted && !!tracked[p.slug];
                 return (
                   <div
@@ -83,6 +85,13 @@ export function CourseStepView({ stepId }: { stepId: number }) {
                         className="rounded-lg border border-brand/40 bg-brand/10 px-2 py-0.5 text-xs font-medium text-brand hover:bg-brand/20"
                       >
                         Study →
+                      </Link>
+                    ) : concept ? (
+                      <Link
+                        href={`/concepts/${concept}`}
+                        className="rounded-lg border border-easy/40 bg-easy/10 px-2 py-0.5 text-xs font-medium text-easy hover:bg-easy/20"
+                      >
+                        Learn →
                       </Link>
                     ) : (
                       <a

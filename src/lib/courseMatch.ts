@@ -294,6 +294,10 @@ const ALIASES: Record<string, string> = {
   partitionarrayformaximumsum: "partition-array-for-maximum-sum",
   completestring: "longest-word-with-all-prefixes",
   implementtrie2: "implement-trie-ii",
+  prefixtopostfix: "prefix-to-postfix-conversion",
+  postfixtoprefix: "postfix-to-prefix-conversion",
+  checkifarrayissorted: "check-if-array-is-sorted",
+  kmporzstringmatchingalgo: "kmp-algorithm-for-pattern-matching",
 };
 
 export function librarySlugForTitle(title: string): string | undefined {

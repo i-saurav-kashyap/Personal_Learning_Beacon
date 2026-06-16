@@ -29,6 +29,7 @@ import { PROBLEMS_BATCH_AA } from "@/lib/data/problems-batch-aa";
 import { PROBLEMS_BATCH_AB } from "@/lib/data/problems-batch-ab";
 import { PROBLEMS_BATCH_AC } from "@/lib/data/problems-batch-ac";
 import { PROBLEMS_BATCH_AD } from "@/lib/data/problems-batch-ad";
+import { PROBLEMS_BATCH_AE } from "@/lib/data/problems-batch-ae";
 
 // ---------------------------------------------------------------------------
 // Seed question library. Each entry follows the full teaching template:
@@ -7078,6 +7079,7 @@ const ALL_PROBLEMS: Problem[] = [
   ...PROBLEMS_BATCH_AB,
   ...PROBLEMS_BATCH_AC,
   ...PROBLEMS_BATCH_AD,
+  ...PROBLEMS_BATCH_AE,
 ];
 
 // Dedup by slug (first wins) — guards against accidental cross-batch duplicates.
