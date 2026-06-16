@@ -13,6 +13,14 @@ import { PROBLEMS_BATCH_K } from "@/lib/data/problems-batch-k";
 import { PROBLEMS_BATCH_L } from "@/lib/data/problems-batch-l";
 import { PROBLEMS_BATCH_M } from "@/lib/data/problems-batch-m";
 import { PROBLEMS_BATCH_N } from "@/lib/data/problems-batch-n";
+import { PROBLEMS_BATCH_O } from "@/lib/data/problems-batch-o";
+import { PROBLEMS_BATCH_P } from "@/lib/data/problems-batch-p";
+import { PROBLEMS_BATCH_Q } from "@/lib/data/problems-batch-q";
+import { PROBLEMS_BATCH_R } from "@/lib/data/problems-batch-r";
+import { PROBLEMS_BATCH_S } from "@/lib/data/problems-batch-s";
+import { PROBLEMS_BATCH_T } from "@/lib/data/problems-batch-t";
+import { PROBLEMS_BATCH_U } from "@/lib/data/problems-batch-u";
+import { PROBLEMS_BATCH_V } from "@/lib/data/problems-batch-v";
 
 // ---------------------------------------------------------------------------
 // Seed question library. Each entry follows the full teaching template:
@@ -7046,6 +7054,14 @@ export const PROBLEMS: Problem[] = [
   ...PROBLEMS_BATCH_L,
   ...PROBLEMS_BATCH_M,
   ...PROBLEMS_BATCH_N,
+  ...PROBLEMS_BATCH_O,
+  ...PROBLEMS_BATCH_P,
+  ...PROBLEMS_BATCH_Q,
+  ...PROBLEMS_BATCH_R,
+  ...PROBLEMS_BATCH_S,
+  ...PROBLEMS_BATCH_T,
+  ...PROBLEMS_BATCH_U,
+  ...PROBLEMS_BATCH_V,
 ];
 
 export const PROBLEM_MAP: Record<string, Problem> = Object.fromEntries(
