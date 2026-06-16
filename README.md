@@ -16,8 +16,8 @@ from "never solved a problem" to "MAANG-ready" — by teaching **pattern recogni
 | Design system (dark/light, a11y, responsive, glass nav) | ✅ |
 | Personalized onboarding → roadmap (level / company / time / language) | ✅ |
 | **Patterns** (17) — explanation, analogy, recognition guide, traps, template, problems | ✅ |
-| **Question Library** (328) — brute→better→optimal, dry run, complexity, tips, mistakes, follow-ups, Java/Python/JS/Apex | ✅ |
-| **Full DSA Course** — A-to-Z, 16 steps / 369 problems (Striver A2Z structure); 247 deep-link into full Beacon solutions, rest link to LeetCode (growing each batch) | ✅ |
+| **Question Library** (426) — brute→better→optimal, dry run, complexity, tips, mistakes, follow-ups, Java/Python/JS/Apex | ✅ |
+| **Full DSA Course** — A-to-Z, 16 steps / 369 problems (Striver A2Z structure); **356/369 deep-link into full Beacon solutions** (remaining ~13 are concept-intro lessons) | ✅ |
 | Grouped navbar — Learn / Practice / Tools dropdowns + Dashboard | ✅ |
 | **Curated sheets** — **Blind 75 (75/75)**, **NeetCode 150 (149/149)**, **Namaste DSA (93/93)** complete with full solutions; Top 50 curated; Striver A2Z via the course | ✅ |
 | **Company-wise prep** (12 companies) — topic/pattern/difficulty distributions + reported problems | ✅ |
