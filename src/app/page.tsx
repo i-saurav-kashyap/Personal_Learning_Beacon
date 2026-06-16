@@ -28,7 +28,7 @@ export default function HomePage() {
       <section className="grid items-center gap-10 pt-6 lg:grid-cols-2">
         <div className="animate-fade-in">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
-            <span className="h-2 w-2 rounded-full bg-easy" /> Built for beginners → FAANG
+            <span className="h-2 w-2 rounded-full bg-easy" /> Built for beginners → MAANG
           </div>
           <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl">
             Don't just learn DSA.

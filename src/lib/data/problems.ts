@@ -3,6 +3,33 @@ import { PROBLEMS_BATCH_A } from "@/lib/data/problems-batch-a";
 import { PROBLEMS_BATCH_B } from "@/lib/data/problems-batch-b";
 import { PROBLEMS_BATCH_C } from "@/lib/data/problems-batch-c";
 import { PROBLEMS_BATCH_D } from "@/lib/data/problems-batch-d";
+import { PROBLEMS_BATCH_E } from "@/lib/data/problems-batch-e";
+import { PROBLEMS_BATCH_F } from "@/lib/data/problems-batch-f";
+import { PROBLEMS_BATCH_G } from "@/lib/data/problems-batch-g";
+import { PROBLEMS_BATCH_H } from "@/lib/data/problems-batch-h";
+import { PROBLEMS_BATCH_I } from "@/lib/data/problems-batch-i";
+import { PROBLEMS_BATCH_J } from "@/lib/data/problems-batch-j";
+import { PROBLEMS_BATCH_K } from "@/lib/data/problems-batch-k";
+import { PROBLEMS_BATCH_L } from "@/lib/data/problems-batch-l";
+import { PROBLEMS_BATCH_M } from "@/lib/data/problems-batch-m";
+import { PROBLEMS_BATCH_N } from "@/lib/data/problems-batch-n";
+import { PROBLEMS_BATCH_O } from "@/lib/data/problems-batch-o";
+import { PROBLEMS_BATCH_P } from "@/lib/data/problems-batch-p";
+import { PROBLEMS_BATCH_Q } from "@/lib/data/problems-batch-q";
+import { PROBLEMS_BATCH_R } from "@/lib/data/problems-batch-r";
+import { PROBLEMS_BATCH_S } from "@/lib/data/problems-batch-s";
+import { PROBLEMS_BATCH_T } from "@/lib/data/problems-batch-t";
+import { PROBLEMS_BATCH_U } from "@/lib/data/problems-batch-u";
+import { PROBLEMS_BATCH_V } from "@/lib/data/problems-batch-v";
+import { PROBLEMS_BATCH_W } from "@/lib/data/problems-batch-w";
+import { PROBLEMS_BATCH_X } from "@/lib/data/problems-batch-x";
+import { PROBLEMS_BATCH_Y } from "@/lib/data/problems-batch-y";
+import { PROBLEMS_BATCH_Z } from "@/lib/data/problems-batch-z";
+import { PROBLEMS_BATCH_AA } from "@/lib/data/problems-batch-aa";
+import { PROBLEMS_BATCH_AB } from "@/lib/data/problems-batch-ab";
+import { PROBLEMS_BATCH_AC } from "@/lib/data/problems-batch-ac";
+import { PROBLEMS_BATCH_AD } from "@/lib/data/problems-batch-ad";
+import { PROBLEMS_BATCH_AE } from "@/lib/data/problems-batch-ae";
 
 // ---------------------------------------------------------------------------
 // Seed question library. Each entry follows the full teaching template:
@@ -7020,13 +7047,45 @@ class Solution {
 ];
 
 // Full library = curated base + topic batches (see problems-batch-*.ts).
-export const PROBLEMS: Problem[] = [
+const ALL_PROBLEMS: Problem[] = [
   ...BASE_PROBLEMS,
   ...PROBLEMS_BATCH_A,
   ...PROBLEMS_BATCH_B,
   ...PROBLEMS_BATCH_C,
   ...PROBLEMS_BATCH_D,
+  ...PROBLEMS_BATCH_E,
+  ...PROBLEMS_BATCH_F,
+  ...PROBLEMS_BATCH_G,
+  ...PROBLEMS_BATCH_H,
+  ...PROBLEMS_BATCH_I,
+  ...PROBLEMS_BATCH_J,
+  ...PROBLEMS_BATCH_K,
+  ...PROBLEMS_BATCH_L,
+  ...PROBLEMS_BATCH_M,
+  ...PROBLEMS_BATCH_N,
+  ...PROBLEMS_BATCH_O,
+  ...PROBLEMS_BATCH_P,
+  ...PROBLEMS_BATCH_Q,
+  ...PROBLEMS_BATCH_R,
+  ...PROBLEMS_BATCH_S,
+  ...PROBLEMS_BATCH_T,
+  ...PROBLEMS_BATCH_U,
+  ...PROBLEMS_BATCH_V,
+  ...PROBLEMS_BATCH_W,
+  ...PROBLEMS_BATCH_X,
+  ...PROBLEMS_BATCH_Y,
+  ...PROBLEMS_BATCH_Z,
+  ...PROBLEMS_BATCH_AA,
+  ...PROBLEMS_BATCH_AB,
+  ...PROBLEMS_BATCH_AC,
+  ...PROBLEMS_BATCH_AD,
+  ...PROBLEMS_BATCH_AE,
 ];
+
+// Dedup by slug (first wins) — guards against accidental cross-batch duplicates.
+export const PROBLEMS: Problem[] = ALL_PROBLEMS.filter(
+  (p, i, arr) => arr.findIndex((q) => q.slug === p.slug) === i,
+);
 
 export const PROBLEM_MAP: Record<string, Problem> = Object.fromEntries(
   PROBLEMS.map((p) => [p.slug, p]),

@@ -21,6 +21,7 @@ const NAV_GROUPS: NavGroupDef[] = [
     label: "Learn",
     items: [
       { label: "Full DSA Course", href: "/course", desc: "A-to-Z, 369 problems, step by step" },
+      { label: "Concept Lessons", href: "/concepts", desc: "Plain-English primers on the core ideas" },
       { label: "Roadmaps", href: "/roadmaps", desc: "14 / 30 / 60 / 90-day plans" },
       { label: "Patterns", href: "/patterns", desc: "Recognise the shape of any problem" },
       { label: "Topics", href: "/topics", desc: "The full DSA syllabus" },

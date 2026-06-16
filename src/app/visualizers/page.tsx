@@ -14,7 +14,7 @@ const GROUPS = [
   {
     group: "Searching",
     items: [
-      { name: "Linear Search", href: "/visualizers/sorting", live: false },
+      { name: "Linear Search", href: "/visualizers/linear-search", live: true },
       { name: "Binary Search", href: "/visualizers/binary-search", live: true },
     ],
   },
@@ -22,20 +22,22 @@ const GROUPS = [
     group: "Trees",
     items: [
       { name: "Traversals (in/pre/post/level)", href: "/visualizers/trees", live: true },
-      { name: "BST Operations", href: "/visualizers/sorting", live: false },
+      { name: "BST Operations (insert / search)", href: "/visualizers/bst", live: true },
     ],
   },
   {
     group: "Graphs",
     items: [
       { name: "BFS / DFS", href: "/visualizers/graphs", live: true },
-      { name: "Dijkstra", href: "/visualizers/sorting", live: false },
-      { name: "Topological Sort", href: "/visualizers/sorting", live: false },
+      { name: "Dijkstra (shortest path)", href: "/visualizers/dijkstra", live: true },
+      { name: "Topological Sort (Kahn's)", href: "/visualizers/topological-sort", live: true },
     ],
   },
   {
     group: "Dynamic Programming",
-    items: [{ name: "State transitions", href: "/visualizers/sorting", live: false }],
+    items: [
+      { name: "Table fill (Unique Paths / Climbing Stairs)", href: "/visualizers/dp", live: true },
+    ],
   },
 ];
 

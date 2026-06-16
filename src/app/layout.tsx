@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     template: "%s · Beacon",
   },
   description:
-    "A pattern-driven, interview-focused DSA learning platform for beginners through FAANG-bound engineers.",
+    "A pattern-driven, interview-focused DSA learning platform for beginners through MAANG-bound engineers.",
 };
 
 export const viewport: Viewport = {

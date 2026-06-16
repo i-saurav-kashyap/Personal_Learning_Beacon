@@ -3,6 +3,23 @@ import type { Config } from "tailwindcss";
 const config: Config = {
   darkMode: "class",
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
+  // Visualizers/badges assign these state colors at runtime — keep them out of
+  // the purge so they always ship.
+  safelist: [
+    "bg-brand",
+    "bg-easy",
+    "bg-medium",
+    "bg-hard",
+    "border-easy",
+    "border-medium",
+    "border-hard",
+    "text-easy",
+    "text-medium",
+    "text-hard",
+    "ring-easy",
+    "ring-medium",
+    "ring-hard",
+  ],
   theme: {
     extend: {
       colors: {

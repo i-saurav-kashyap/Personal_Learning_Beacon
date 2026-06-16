@@ -1,7 +1,7 @@
 # Beacon — Personal Learning Beacon
 
 A pattern-driven, interview-focused DSA learning platform. Built to take a learner
-from "never solved a problem" to "FAANG-ready" — by teaching **pattern recognition**,
+from "never solved a problem" to "MAANG-ready" — by teaching **pattern recognition**,
 **optimisation**, and **how to explain solutions in an interview**, not just topics.
 
 > This repository is the **working app foundation** (pass 1). It is a real, runnable
@@ -16,13 +16,14 @@ from "never solved a problem" to "FAANG-ready" — by teaching **pattern recogni
 | Design system (dark/light, a11y, responsive, glass nav) | ✅ |
 | Personalized onboarding → roadmap (level / company / time / language) | ✅ |
 | **Patterns** (17) — explanation, analogy, recognition guide, traps, template, problems | ✅ |
-| **Question Library** (119) — brute→better→optimal, dry run, complexity, tips, mistakes, follow-ups, Java/Python/JS/Apex | ✅ |
-| **Full DSA Course** — A-to-Z, 16 steps / 369 problems (Striver A2Z structure) with check-off progress, deep-linking into the library | ✅ |
+| **Question Library** (430) — brute→better→optimal, dry run, complexity, tips, mistakes, follow-ups, Java/Python/JS/Apex | ✅ |
+| **Full DSA Course** — A-to-Z, 16 steps / 369 problems (Striver A2Z); **all 369 resolve in-app** — 360 "Study →" (full solutions) + 9 "Learn →" (concept lessons). Zero external links. | ✅ |
+| **Concept Lessons** (7) — plain-English primers (trees, BST, linked lists, DLL, graphs, bit manipulation) with analogy, visual, code & key points | ✅ |
 | Grouped navbar — Learn / Practice / Tools dropdowns + Dashboard | ✅ |
-| Curated sheets (Blind 75, NeetCode 150, Namaste, Striver, Top 50) with progress | ✅ |
-| Company-wise prep (topic/pattern/difficulty distributions) | ✅ |
+| **Curated sheets** — **Blind 75 (75/75)**, **NeetCode 150 (149/149)**, **Namaste DSA (93/93)** complete with full solutions; Top 50 curated; Striver A2Z via the course | ✅ |
+| **Company-wise prep** (12 companies) — topic/pattern/difficulty distributions + reported problems | ✅ |
 | Roadmaps (14/30/60/90 day) with progress tracking | ✅ |
-| Visualizers — Sorting (5 algos), Binary Search, Tree Traversal, Graph BFS/DFS (play/pause/step/speed) | ✅ |
+| Visualizers (9) — Sorting (5 algos), Linear & Binary Search, Tree Traversal, BST ops, Graph BFS/DFS, Dijkstra, Topological Sort, DP table-fill (play/pause/step/speed) | ✅ |
 | Dashboard (progress, streak, weak/strong topics, revision schedule) | ✅ |
 | Spaced-repetition Revision Hub (1·3·7·15·30 day) | ✅ |
 | **AI Tutor** — streaming Claude chat via `/api/tutor` (set `ANTHROPIC_API_KEY`; graceful fallback without it) | ✅ |
